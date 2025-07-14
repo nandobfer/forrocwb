@@ -9,6 +9,11 @@ export interface LoginForm {
     login: string;
     password: string;
 }
+export interface AccessToken {
+    value: string;
+    exp: number;
+    iat: number;
+}
 export declare class User {
     id: string;
     name: string;

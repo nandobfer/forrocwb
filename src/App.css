@@ -61,6 +61,10 @@ section {
     flex-shrink: 0;
 }
 
+.MuiButton-root {
+    text-transform: none !important;
+}
+
 img {
     object-fit: contain;
 }
@@ -82,4 +86,10 @@ img {
 
 .link:hover {
     text-decoration: underline;
+}
+
+input:-webkit-autofill {
+  -webkit-box-shadow: 0 0 0 1000px #141519 inset !important;
+  -webkit-text-fill-color: #fff !important;
+  caret-color: #fff;
 }

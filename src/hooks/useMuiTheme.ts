@@ -25,6 +25,7 @@ export const useMuiTheme = () => {
                             default: colors.background,
                             // paper: colors.paper,
                         },
+                        // text: {primary: colors.primary}
                     },
                     components: {
                         MuiMenuList: { defaultProps: { sx: { backgroundColor: colors.background } } },

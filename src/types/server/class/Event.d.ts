@@ -12,7 +12,9 @@ export declare const event_include: {
 export type EventPrisma = Prisma.EventGetPayload<{
     include: typeof event_include;
 }>;
-export type EventForm = Omit<Event, "id">;
+export type EventForm = Omit<Event, "id" | "image"> & {
+    image?: string;
+};
 export interface Location {
     street: string;
     district: string;
@@ -30,6 +32,7 @@ export declare class Event {
     week: number;
     bands: Band[];
     artists: Artist[];
+    image: string | null;
     static getWeek(week: number | string): Promise<Event[]>;
     static getCurrentWeek(): Promise<Event[]>;
     static getAll(): Promise<Event[]>;
