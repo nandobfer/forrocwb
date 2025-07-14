@@ -1,24 +1,10 @@
 import React, { useEffect, useState } from "react"
-import {
-    AppBar,
-    Avatar,
-    Box,
-    ClickAwayListener,
-    Divider,
-    IconButton,
-    Menu,
-    MenuItem,
-    Paper,
-    Popper,
-    Toolbar,
-    Typography,
-    useMediaQuery,
-} from "@mui/material"
+import { AppBar, Avatar, Box, IconButton, Menu, Toolbar, Typography, useMediaQuery } from "@mui/material"
 import { useUser } from "../hooks/useUser"
 import { AccountCircle, Menu as MenuIcon } from "@mui/icons-material"
-import { version } from "../version"
 import { AccountMenu } from "./AccountMenu"
 import { LoginFormMenu } from "./LoginFormMenu"
+import { Routes } from "./Routes"
 
 interface HeaderProps {}
 
@@ -40,14 +26,14 @@ export const Header: React.FC<HeaderProps> = (props) => {
     }, [user])
 
     return (
-        <AppBar enableColorOnDark>
+        <AppBar enableColorOnDark position="sticky">
             <Toolbar sx={{ justifyContent: "space-between" }}>
-                <IconButton>
-                    <MenuIcon sx={{ color: "background.default" }} />
-                </IconButton>
-                <Typography variant="h6" sx={{ fontWeight: 600 }}>
-                    Forró CWB
-                </Typography>
+                <Box sx={{ gap: 0.5, alignItems: "flex-end" }}>
+                    <Typography variant="h6" sx={{ fontWeight: 600 }}>
+                        Forró CWB
+                    </Typography>
+                    <Routes />
+                </Box>
                 <IconButton onClick={handleAccountMenuClick}>
                     {user ? (
                         <Avatar sx={{ color: "primary.main", bgcolor: "background.default", width: "1em", height: "1em" }}>

@@ -1,4 +1,4 @@
-import React, { useState } from "react"
+import React, { useEffect, useRef, useState } from "react"
 import { Box, Button, CircularProgress, TextField, Typography } from "@mui/material"
 import { useFormik } from "formik"
 import { type LoginForm } from "../types/server/class/User"
@@ -54,6 +54,7 @@ export const LoginFormMenu: React.FC<LoginFormMenuProps> = (props) => {
                     value={formik.values.login}
                     name="login"
                     onChange={formik.handleChange}
+                    type="email"
                     size="small"
                     variant="standard"
                     disabled={isPending}

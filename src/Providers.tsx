@@ -7,6 +7,7 @@ import { MantineProvider } from "@mantine/core"
 import { Header } from "./components/Header"
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query"
 import { UserProvider } from "./contexts/UserContext"
+import { AdminDial } from "./components/AdminDial"
 
 interface ProvidersProps {
     children?: React.ReactNode
@@ -22,12 +23,13 @@ export const Providers: React.FC<ProvidersProps> = (props) => {
                     <ConfirmDialogProvider>
                         <QueryClientProvider client={new QueryClient()}>
                             <UserProvider>
-                                <Box sx={{ height: 1, bgcolor: "background.default", flexDirection: "column", overflowY: "auto" }}>
-                                    <Header />
+                                <Header />
+                                <Box sx={{ height: 1, bgcolor: "background.default", flexDirection: "column", overflowY: "auto", padding: 2 }}>
                                     {props.children}
-                                    <Snackbar />
-                                    <ConfirmDialog />
                                 </Box>
+                                <Snackbar />
+                                <ConfirmDialog />
+                                <AdminDial />
                             </UserProvider>
                         </QueryClientProvider>
                     </ConfirmDialogProvider>
