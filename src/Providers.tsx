@@ -18,7 +18,7 @@ export const Providers: React.FC<ProvidersProps> = (props) => {
             <MantineProvider>
                 <SnackbarProvider>
                     <ConfirmDialogProvider>
-                        <Box sx={{ height: 1, bgcolor: "background.default", flexDirection: 'column' }}>
+                        <Box sx={{ height: 1, bgcolor: "background.default", flexDirection: "column", overflowY: "auto" }}>
                             <Header />
                             {props.children}
                             <Snackbar />

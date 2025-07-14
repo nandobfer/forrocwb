@@ -4,7 +4,5 @@ import { Box } from "@mui/material"
 interface HomeProps {}
 
 export const Home: React.FC<HomeProps> = (props) => {
-    return <Box sx={{}}>
-        <Box sx={{border: '1px solid red', height: '120vh'}} />
-    </Box>
+    return <Box sx={{}}></Box>
 }
