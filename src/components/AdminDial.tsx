@@ -8,6 +8,7 @@ import { adminRoutes } from "../Router"
 import { useDisclosure } from "@mantine/hooks"
 import FormModalContext from "../contexts/FormModalContext"
 import { ArtistFormModal } from "../pages/Artists/ArtistFormModal"
+import { BandFormModal } from "../pages/Bands/BandFormModal"
 
 interface AdminDialProps {}
 
@@ -85,6 +86,7 @@ export const AdminDial: React.FC<AdminDialProps> = (props) => {
             </SpeedDial>
 
             <ArtistFormModal />
+            <BandFormModal />
         </>
     )
 }

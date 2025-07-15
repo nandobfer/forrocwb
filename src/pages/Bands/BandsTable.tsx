@@ -128,7 +128,7 @@ export const BandsTable: React.FC<BandsTableProps> = (props) => {
                 refetch()
             }
         }
-    }, [formContext.artist])
+    }, [formContext.band])
 
     return (
         <Box sx={{ flexDirection: "column" }}>
