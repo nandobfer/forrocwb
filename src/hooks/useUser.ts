@@ -1,7 +1,9 @@
-import { useContext } from "react"
+import { useContext, useMemo } from "react"
 import UserContext from "../contexts/UserContext"
 import { jwtDecode } from "jwt-decode"
 import type { User } from "../types/server/class/User"
+import axios from "axios"
+import { api_url } from "../backend/api"
 
 export const useUser = () => {
     const context = useContext(UserContext)
@@ -17,5 +19,10 @@ export const useUser = () => {
         context.setAccessToken({ ...decryped, value: token })
     }
 
-    return { ...context, logout,  handleLogin }
+    const adminApi = useMemo(
+        () => axios.create({ baseURL: api_url, headers: { Authorization: `Bearer ${context.accessToken?.value}` } }),
+        [context.accessToken]
+    )
+
+    return { ...context, logout, handleLogin, adminApi }
 }

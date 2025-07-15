@@ -1,9 +1,11 @@
-import { createTheme } from "@mui/material"
+import { createTheme, LinearProgress, useMediaQuery } from "@mui/material"
 import { useMemo } from "react"
 import { ptBR } from "@mui/x-data-grid/locales"
 import { colors } from "../style/colors"
 
 export const useMuiTheme = () => {
+    const isMobile = useMediaQuery("(orientation: portrait)")
+
     const THEME = useMemo(
         () =>
             createTheme(
@@ -36,14 +38,17 @@ export const useMuiTheme = () => {
                                     color: colors.secondary,
                                 },
                             },
+                            defaultProps: {
+                                slotProps: { columnHeaders: { style: { display: isMobile ? "none" : undefined } } },
+                            },
                         },
                         MuiAutocomplete: {
                             styleOverrides: {
                                 listbox: { width: "100%", backgroundColor: colors.background },
                             },
                         },
-                        MuiButton: { styleOverrides: { contained: { color: colors.secondary } } },
-                        MuiCircularProgress: { defaultProps: { size: "1.5rem", color: "secondary" } },
+                        // MuiButton: { styleOverrides: { contained: { color: colors.secondary } } },
+                        MuiCircularProgress: { defaultProps: { size: "1.5rem", color: "inherit" } },
                         MuiTooltip: { defaultProps: { arrow: true } },
                     },
                 },

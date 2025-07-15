@@ -35,14 +35,13 @@ export const Title: React.FC<{
                         color: colors.primary,
                         overflow: "hidden",
                         textOverflow: "ellipsis",
-                        fontFamily: "BowlbyOneSC",
                     }}
                 >
                     {name}
                 </Typography>
             </Box>
             {right && right}
-                {refresh && <IconButton onClick={refresh}>{refreshing ? <CircularProgress size="1.5rem" /> : <Refresh />}</IconButton>}
+            {refresh && <IconButton onClick={refresh}>{refreshing ? <CircularProgress size="1.5rem" /> : <Refresh />}</IconButton>}
         </Box>
     )
 }
