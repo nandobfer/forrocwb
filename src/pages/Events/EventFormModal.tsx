@@ -11,6 +11,8 @@ import {
     IconButton,
     MenuItem,
     Skeleton,
+    Tab,
+    Tabs,
     TextField,
     Typography,
 } from "@mui/material"
@@ -27,6 +29,8 @@ import { getWeekNumber } from "../../tools/getWeekNumber"
 import type { Band } from "../../types/server/class/Band"
 import { DateTimePicker } from "@mui/x-date-pickers/DateTimePicker"
 import dayjs from "dayjs"
+import { searchCep } from "../../tools/searchCep"
+import MaskedInputComponent from "../../components/MaskedInput"
 
 interface EventFormModalProps {}
 
@@ -34,8 +38,10 @@ const endpoint = "/event"
 
 export const EventFormModal: React.FC<EventFormModalProps> = (props) => {
     const [loading, setLoading] = useState(false)
+    const [searchingCep, setSearchingCep] = useState(false)
     const [imageError, setImageError] = useState(false)
     const [imageLoading, setImageLoading] = useState(false)
+    const [currentTab, setCurrentTab] = useState<"basic" | "location" | "details">("basic")
 
     const isMobile = useMediaQuery("(orientation: portrait)")
     const context = useFormModal()
@@ -92,13 +98,15 @@ export const EventFormModal: React.FC<EventFormModalProps> = (props) => {
                   bands: [],
                   price: 0,
                   ticketUrl: "",
-                  week: getWeekNumber(new Date().getTime()),
+                  week: -1,
               },
         async onSubmit(values, formikHelpers) {
             if (loading) return
 
             try {
                 setLoading(true)
+
+                values.week = getWeekNumber(values.datetime)
 
                 const response = context.event
                     ? await api.patch(endpoint, values, { params: { event_id: context.event.id } })
@@ -125,6 +133,20 @@ export const EventFormModal: React.FC<EventFormModalProps> = (props) => {
         }
     }, [context.isOpen])
 
+    useEffect(() => {
+        if (formik.values.location.cep.length === 10 && formik.touched.location?.cep) {
+            setSearchingCep(true)
+            searchCep(formik.values.location.cep)
+                .then((result) => {
+                    formik.setFieldValue("location.street", result?.street)
+                    formik.setFieldValue("location.district", result?.neighborhood)
+                })
+                .finally(() => {
+                    setSearchingCep(false)
+                })
+        }
+    }, [formik.values.location.cep])
+
     return (
         <Dialog
             open={context.isOpen === "event"}
@@ -142,7 +164,13 @@ export const EventFormModal: React.FC<EventFormModalProps> = (props) => {
 
             <Box sx={{ flexDirection: "column", gap: 2, maxHeight: "60vh", overflowY: "auto", margin: -2, padding: 2 }}>
                 <form onSubmit={formik.handleSubmit}>
-                    {context.event && (
+                    <Tabs value={currentTab} onChange={(_, value) => setCurrentTab(value)} variant="fullWidth">
+                        <Tab label="Informações básicas" value={"basic"} />
+                        <Tab label="Localização" value={"location"} />
+                        <Tab label="Detalhes" value={"details"} />
+                    </Tabs>
+
+                    {context.event && currentTab === "basic" && (
                         <Button onClick={() => fileDialog.open()} sx={{ width: 1, alignSelf: "center", position: "relative" }}>
                             {imageLoading ? (
                                 <Skeleton variant="rounded" animation="wave" sx={{ flex: 1, height: "auto", aspectRatio: 2 }} />
@@ -170,26 +198,111 @@ export const EventFormModal: React.FC<EventFormModalProps> = (props) => {
                             />
                         </Button>
                     )}
-                    <DateTimePicker
-                        label="Data e hora"
-                        slotProps={{ textField: { size: "small", required: true } }}
-                        value={dayjs(Number(formik.values.datetime))}
-                        onChange={(value) => formik.setFieldValue('datetime', value?.toDate().getTime().toString())}
-                    />
 
-                    <TextField label="Nome" value={formik.values.title} name="title" onChange={formik.handleChange} size="small" required />
+                    {currentTab === "basic" && (
+                        <>
+                            <DateTimePicker
+                                label="Data e hora"
+                                slotProps={{ textField: { size: "small", required: true } }}
+                                value={dayjs(Number(formik.values.datetime))}
+                                onChange={(value) => formik.setFieldValue("datetime", value?.toDate().getTime().toString())}
+                            />
 
-                    {context.event && (
+                            <TextField label="Nome" value={formik.values.title} name="title" onChange={formik.handleChange} size="small" required />
+
+                            {context.event && (
+                                <>
+                                    <TextField
+                                        label="Descrição"
+                                        multiline
+                                        value={formik.values.description}
+                                        name="description"
+                                        onChange={formik.handleChange}
+                                        size="small"
+                                        minRows={3}
+                                        maxRows={5}
+                                    />
+                                </>
+                            )}
+                        </>
+                    )}
+
+                    {currentTab === "location" && (
                         <>
                             <TextField
-                                label="Descrição"
-                                multiline
-                                value={formik.values.description}
-                                name="description"
+                                label="CEP"
+                                value={formik.values.location.cep}
+                                name="location.cep"
                                 onChange={formik.handleChange}
                                 size="small"
-                                minRows={3}
-                                maxRows={5}
+                                required
+                                type="tel"
+                                slotProps={{
+                                    input: {
+                                        inputComponent: MaskedInputComponent,
+                                        inputProps: { mask: "00.000-000" },
+                                        endAdornment: searchingCep ? <CircularProgress /> : null,
+                                    },
+                                }}
+                            />
+                            <TextField
+                                label="Rua"
+                                value={formik.values.location.street}
+                                name="location.street"
+                                onChange={formik.handleChange}
+                                size="small"
+                                required
+                            />
+
+                            <Box>
+                                <TextField
+                                    label="Bairro"
+                                    value={formik.values.location.district}
+                                    name="location.district"
+                                    onChange={formik.handleChange}
+                                    size="small"
+                                    required
+                                    sx={{ flex: 0.7 }}
+                                />
+                                <TextField
+                                    label="Número"
+                                    value={formik.values.location.number}
+                                    name="location.number"
+                                    onChange={formik.handleChange}
+                                    size="small"
+                                    required
+                                    sx={{ flex: 0.3 }}
+                                />
+                            </Box>
+                            <TextField
+                                label="Complemento"
+                                value={formik.values.location.complement}
+                                name="location.complement"
+                                onChange={formik.handleChange}
+                                size="small"
+                            />
+                        </>
+                    )}
+
+                    {currentTab === "details" && context.event && (
+                        <>
+                            <TextField
+                                label="Preço"
+                                value={formik.values.price}
+                                name="price"
+                                onChange={formik.handleChange}
+                                size="small"
+                                required
+                                type="tel"
+                            />
+                            <TextField
+                                label="Ingresso"
+                                value={formik.values.ticketUrl}
+                                name="ticketUrl"
+                                onChange={formik.handleChange}
+                                size="small"
+                                required
+                                type="url"
                             />
                             <Autocomplete
                                 options={bands}
