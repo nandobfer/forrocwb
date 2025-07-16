@@ -17,7 +17,7 @@ export const BandsTable: React.FC<BandsTableProps> = (props) => {
 
     const [loading, setLoading] = useState(false)
 
-    const { data, isFetching, refetch } = useQuery<Artist[]>({
+    const { data, isFetching, refetch } = useQuery<Band[]>({
         initialData: [],
         queryKey: ["bandsData"],
         queryFn: async () => (await api.get("/band")).data,

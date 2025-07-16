@@ -6,6 +6,7 @@ import { useUser } from "./hooks/useUser"
 import { ArtistsTable } from "./pages/Artists/ArtistsTable"
 import { NotFound } from "./pages/NotFound"
 import { BandsTable } from "./pages/Bands/BandsTable"
+import { EventsTable } from "./pages/Events/EventsTable"
 
 export interface RouteItem {
     path: string
@@ -25,6 +26,7 @@ export const routes: RouteItem[] = [
 export const adminRoutes: RouteItem[] = [
     { element: <ArtistsTable />, label: "Artistas", path: "/admin/artistas", id: "artist" },
     { element: <BandsTable />, label: "Bandas", path: "/admin/bandas", id: "band" },
+    { element: <EventsTable />, label: "Eventos", path: "/admin/eventos", id: "event" },
 ]
 
 export const Router: React.FC<RouterProps> = (props) => {

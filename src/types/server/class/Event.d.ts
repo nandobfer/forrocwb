@@ -1,6 +1,7 @@
 import { Prisma } from "@prisma/client";
 import { Band } from "./Band";
 import { Artist } from "./Artist";
+import { WithoutFunctions } from "./helpers";
 export declare const event_include: {
     bands: {
         include: {
@@ -12,7 +13,7 @@ export declare const event_include: {
 export type EventPrisma = Prisma.EventGetPayload<{
     include: typeof event_include;
 }>;
-export type EventForm = Omit<Event, "id" | "image"> & {
+export type EventForm = Omit<WithoutFunctions<Event>, "id" | "image"> & {
     image?: string;
 };
 export interface Location {
@@ -33,6 +34,7 @@ export declare class Event {
     bands: Band[];
     artists: Artist[];
     image: string | null;
+    ticketUrl: string | null;
     static getWeek(week: number | string): Promise<Event[]>;
     static getCurrentWeek(): Promise<Event[]>;
     static getAll(): Promise<Event[]>;

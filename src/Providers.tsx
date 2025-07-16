@@ -9,6 +9,9 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query"
 import { UserProvider } from "./contexts/UserContext"
 import { AdminDial } from "./components/AdminDial"
 import { FormModalProvider } from "./contexts/FormModalContext"
+import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider"
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs"
+import "dayjs/locale/pt-br"
 
 interface ProvidersProps {
     children?: React.ReactNode
@@ -19,23 +22,25 @@ export const Providers: React.FC<ProvidersProps> = (props) => {
 
     return (
         <ThemeProvider theme={theme}>
-            <MantineProvider>
-                <SnackbarProvider>
-                    <ConfirmDialogProvider>
-                        <QueryClientProvider client={new QueryClient()}>
-                            <UserProvider>
-                                <FormModalProvider>
-                                    <Header />
-                                    <Box sx={{ flexDirection: "column", overflowY: "auto", padding: 2 }}>{props.children}</Box>
-                                    <Snackbar />
-                                    <ConfirmDialog />
-                                    <AdminDial />
-                                </FormModalProvider>
-                            </UserProvider>
-                        </QueryClientProvider>
-                    </ConfirmDialogProvider>
-                </SnackbarProvider>
-            </MantineProvider>
+            <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale="pt-br">
+                <MantineProvider>
+                    <SnackbarProvider>
+                        <ConfirmDialogProvider>
+                            <QueryClientProvider client={new QueryClient()}>
+                                <UserProvider>
+                                    <FormModalProvider>
+                                        <Header />
+                                        <Box sx={{ flexDirection: "column", overflowY: "auto", padding: 2 }}>{props.children}</Box>
+                                        <Snackbar />
+                                        <ConfirmDialog />
+                                        <AdminDial />
+                                    </FormModalProvider>
+                                </UserProvider>
+                            </QueryClientProvider>
+                        </ConfirmDialogProvider>
+                    </SnackbarProvider>
+                </MantineProvider>
+            </LocalizationProvider>
         </ThemeProvider>
     )
 }

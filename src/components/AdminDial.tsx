@@ -9,6 +9,7 @@ import { useDisclosure } from "@mantine/hooks"
 import FormModalContext from "../contexts/FormModalContext"
 import { ArtistFormModal } from "../pages/Artists/ArtistFormModal"
 import { BandFormModal } from "../pages/Bands/BandFormModal"
+import { EventFormModal } from "../pages/Events/EventFormModal"
 
 interface AdminDialProps {}
 
@@ -87,6 +88,7 @@ export const AdminDial: React.FC<AdminDialProps> = (props) => {
 
             <ArtistFormModal />
             <BandFormModal />
+            <EventFormModal />
         </>
     )
 }

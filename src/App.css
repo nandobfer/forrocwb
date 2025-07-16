@@ -70,10 +70,10 @@ img {
     object-fit: contain;
 }
 
-::-webkit-scrollbar {
+/* ::-webkit-scrollbar {
     width: 5px;
     height: 5px;
-}
+} */
 
 /* ::-webkit-scrollbar {
     width: 8px;

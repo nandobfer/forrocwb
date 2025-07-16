@@ -1,15 +1,78 @@
-import React from 'react'
-import {Box} from '@mui/material'
+import React, { useEffect, useState } from "react"
+import { Box, LinearProgress } from "@mui/material"
+import { useFormModal } from "../../hooks/useFormModal"
+import { useQuery } from "@tanstack/react-query"
+import { api } from "../../backend/api"
+import { DataGrid, type GridColDef } from "@mui/x-data-grid"
+import type { Event } from "../../types/server/class/Event"
+import { Toolbar } from "@mui/x-data-grid"
+import { DataGridToolbar, toolbar_style } from "../../components/DataGridToolbar"
 
-interface EventsTableProps {
-    
-}
+interface EventsTableProps {}
 
-export const EventsTable:React.FC<EventsTableProps> = (props) => {
-    
+export const EventsTable: React.FC<EventsTableProps> = (props) => {
+    const formContext = useFormModal()
+
+    const [loading, setLoading] = useState(false)
+
+    const { data, isFetching, refetch } = useQuery<Event[]>({
+        initialData: [],
+        queryKey: ["eventsData"],
+        queryFn: async () => (await api.get("/event")).data,
+    })
+
+    const columns: (GridColDef & { field: keyof Event | "actions" })[] = [
+        {
+            field: "title",
+            headerName: "Nome",
+            flex: 1,
+            display: "flex",
+            // renderCell(params) {
+            //     return <BandTableCell band={params.row} loading={loading} refetch={refetch} setLoading={setLoading} />
+            // },
+        },
+    ]
+
+    useEffect(() => {
+        if (formContext.event) {
+            return () => {
+                refetch()
+            }
+        }
+    }, [formContext.event])
+
     return (
-        <Box sx={{}}>
-            
+        <Box sx={{ flexDirection: "column" }}>
+            <DataGrid
+                loading={isFetching || loading}
+                rows={data}
+                columns={columns}
+                initialState={{
+                    pagination: { paginationModel: { page: 0, pageSize: 100 } },
+                    sorting: { sortModel: [{ field: "name", sort: "asc" }] },
+                }}
+                pageSizeOptions={[10, 20, 50]}
+                sx={{ border: 0 }}
+                // rowHeight={470}
+                showToolbar
+                hideFooterPagination
+                // autoPageSize
+                density="compact"
+                slotProps={{ loadingOverlay: { sx: { height: 9999 } } }}
+                slots={{
+                    baseLinearProgress: () => <LinearProgress sx={{ marginTop: -5 }} />,
+                    toolbar: () => (
+                        <Toolbar style={toolbar_style}>
+                            <DataGridToolbar
+                                refresh={refetch}
+                                loading={isFetching || loading}
+                                title="Eventos"
+                                add={() => formContext.open("event")}
+                            />
+                        </Toolbar>
+                    ),
+                }}
+            />
         </Box>
     )
 }
