@@ -78,7 +78,7 @@ export const AdminDial: React.FC<AdminDialProps> = (props) => {
                 {actions.map((action) => (
                     <SpeedDialAction
                         key={action.label}
-                        icon={<action.icon />}
+                        icon={<action.icon color="primary" />}
                         slotProps={{ tooltip: { title: action.label, arrow: true } }}
                         onClick={() => handleEditClick(action.target)}
                     />

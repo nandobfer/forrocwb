@@ -10,7 +10,8 @@ import { useFormModal } from "../../hooks/useFormModal"
 import { GridActionsCellItem } from "@mui/x-data-grid"
 import { useUser } from "../../hooks/useUser"
 import { useConfirmDialog } from "burgos-confirm"
-import { Delete, Edit, Visibility } from "@mui/icons-material"
+import { Delete, Edit, Instagram, TextFormat, Visibility } from "@mui/icons-material"
+import { PendingInfoChip } from "../../components/PendingInfoChip"
 
 interface ArtistsTableProps {}
 
@@ -71,7 +72,7 @@ export const ArtistsTable: React.FC<ArtistsTableProps> = (props) => {
                                 whiteSpace: "normal",
                             }}
                         >
-                            {artist.description}
+                            {artist.description || <PendingInfoChip text="descrição pendente" icon={TextFormat} />}
                         </Typography>
                         <Typography
                             variant="subtitle2"
@@ -80,7 +81,7 @@ export const ArtistsTable: React.FC<ArtistsTableProps> = (props) => {
                             className="link"
                             onClick={() => (artist.instagram ? window.open(artist.instagram, "_new") : undefined)}
                         >
-                            {ig_user ? `@${ig_user}` : artist.instagram}
+                            {ig_user ? `@${ig_user}` : artist.instagram || <PendingInfoChip text="instagram pendente" icon={Instagram} />}
                         </Typography>
                     </Box>
                 )

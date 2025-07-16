@@ -6,6 +6,7 @@ import { GridActionsCellItem } from "@mui/x-data-grid"
 import { useConfirmDialog } from "burgos-confirm"
 import { useUser } from "../../hooks/useUser"
 import { useFormModal } from "../../hooks/useFormModal"
+import { PendingInfoChip } from "../../components/PendingInfoChip"
 
 interface BandTableCellProps {
     band: Band
@@ -75,7 +76,6 @@ export const BandTableCell: React.FC<BandTableCellProps> = (props) => {
                 <Typography
                     variant="caption"
                     sx={{
-
                         display: "-webkit-box",
                         WebkitBoxOrient: "vertical",
                         WebkitLineClamp: 3,
@@ -86,7 +86,7 @@ export const BandTableCell: React.FC<BandTableCellProps> = (props) => {
                         whiteSpace: "break-spaces",
                     }}
                 >
-                    {band.description || <Chip icon={<TextFormat />} size='small' label='descrição pendente' />}
+                    {band.description || <PendingInfoChip text="descrição pendente" icon={TextFormat} />}
                 </Typography>
                 <Typography
                     variant="subtitle2"
@@ -95,14 +95,14 @@ export const BandTableCell: React.FC<BandTableCellProps> = (props) => {
                     className="link"
                     onClick={() => (band.instagram ? window.open(band.instagram, "_new") : undefined)}
                 >
-                    {ig_user ? `@${ig_user}` : band.instagram || <Chip icon={<Instagram />} size='small' label='instagram pendente' sx={{marginTop: 1}}  />}
+                    {ig_user ? `@${ig_user}` : band.instagram || <PendingInfoChip text="instagram pendente" icon={Instagram} />}
                 </Typography>
             </Box>
             <Box sx={{ gap: 1, maxWidth: containerWidth, overflowX: "auto" }}>
                 {band.artists.map((artist) => (
                     <Chip size="small" label={artist.name} key={artist.id} color="primary" />
                 ))}
-                {band.artists.length === 0 && <Chip icon={<Groups/>} size='small' label='nenhum integrante selecionado' />}
+                {band.artists.length === 0 && <PendingInfoChip text="nenhum integrante selecionado" icon={Groups} />}
             </Box>
 
             <Menu open={!!menuAnchor} anchorEl={menuAnchor} onClose={closeMenu}>

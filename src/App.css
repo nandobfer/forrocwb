@@ -75,6 +75,16 @@ img {
     height: 5px;
 }
 
+/* ::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+} */
+
+::-webkit-scrollbar-thumb {
+    background-color: #ff6404;
+    border-radius: 4px;
+}
+
 ::selection {
     color: white;
     background: #ff6404;
