@@ -42,7 +42,7 @@ export const ArtistsTable: React.FC<ArtistsTableProps> = (props) => {
         {
             field: "name",
             headerName: "Nome",
-            flex: 0.3,
+            flex: 1,
             display: "flex",
             renderCell(params) {
                 const artist = params.row as Artist
@@ -58,14 +58,17 @@ export const ArtistsTable: React.FC<ArtistsTableProps> = (props) => {
                     <Box sx={{ flexDirection: "column", gap: 0 }}>
                         <Typography variant="subtitle2">{artist.name}</Typography>
                         <Typography
-                            variant="body2"
+                            variant="caption"
                             sx={{
                                 display: "-webkit-box",
                                 WebkitBoxOrient: "vertical",
                                 WebkitLineClamp: 3,
                                 overflow: "hidden",
                                 textOverflow: "ellipsis",
-                                maxWidth: 200,
+                                maxWidth: 240,
+                                lineHeight: 1.5,
+                                maxHeight: "4.5em",
+                                whiteSpace: "normal",
                             }}
                         >
                             {artist.description}
@@ -136,7 +139,7 @@ export const ArtistsTable: React.FC<ArtistsTableProps> = (props) => {
                 rows={data}
                 columns={columns}
                 initialState={{
-                    pagination: { paginationModel: { page: 0, pageSize: 10 } },
+                    pagination: { paginationModel: { page: 0, pageSize: 100 } },
                     sorting: { sortModel: [{ field: "name", sort: "asc" }] },
                 }}
                 pageSizeOptions={[10, 20, 50]}

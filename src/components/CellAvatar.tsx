@@ -10,8 +10,8 @@ export const CellAvatar: React.FC<CellAvatarProps> = (props) => {
     const [error, setError] = useState(false)
 
     return (
-        <Avatar src={props.source} sx={{ width: 60, height: 60 }} variant="rounded" onError={() => setError(true)}>
-            {error ? <BrokenImage /> : <Skeleton variant="rounded" width={60} height={60} animation="wave" />}
+        <Avatar src={props.source} sx={{ width: 60, height: 60 }} variant="circular" onError={() => setError(true)}>
+            {error ? <BrokenImage /> : <Skeleton variant="circular" width={60} height={60} animation="wave" />}
         </Avatar>
     )
 }

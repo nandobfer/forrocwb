@@ -85,7 +85,7 @@ export const ArtistFormModal: React.FC<ArtistFormModalProps> = (props) => {
             slotProps={{ paper: { sx: { maxWidth: "100vw", display: "flex", padding: 2, flexDirection: "column", gap: 2 }, elevation: undefined } }}
         >
             <Title
-                name={context.artist?.name ? `Editar ${context.artist.name}`  : "Cadastrar artista"}
+                name={context.artist?.name ? `Editar ${context.artist.name}` : "Cadastrar artista"}
                 right={
                     <IconButton onClick={context.close}>
                         <Close />
@@ -96,16 +96,28 @@ export const ArtistFormModal: React.FC<ArtistFormModalProps> = (props) => {
             <Box sx={{ flexDirection: "column", gap: 2 }}>
                 <form onSubmit={formik.handleSubmit}>
                     {context.artist && (
-                        <IconButton onClick={() => fileDialog.open()} sx={{ width: "min-content", alignSelf: "center", position: 'relative' }}>
+                        <IconButton onClick={() => fileDialog.open()} sx={{ width: "min-content", alignSelf: "center", position: "relative" }}>
                             {imageLoading ? (
                                 <Skeleton variant="rounded" width={150} height={150} animation="wave" sx={{ borderRadius: "100%" }} />
                             ) : (
                                 <Avatar src={context.artist.image || undefined} sx={{ width: 150, aspectRatio: 1, height: "auto" }}></Avatar>
                             )}
-                            <Edit sx={{position: 'absolute', top: 10, right: 10, color: 'background.default', bgcolor: 'primary.main', borderRadius: '100%', width: 30, height: 'auto', padding: 0.5}}  />
+                            <Edit
+                                sx={{
+                                    position: "absolute",
+                                    top: 10,
+                                    right: 10,
+                                    color: "background.default",
+                                    bgcolor: "primary.main",
+                                    borderRadius: "100%",
+                                    width: 30,
+                                    height: "auto",
+                                    padding: 0.5,
+                                }}
+                            />
                         </IconButton>
                     )}
-                    <TextField label="Nome" value={formik.values.name} name="name" onChange={formik.handleChange} size="small" />
+                    <TextField label="Nome" value={formik.values.name} name="name" onChange={formik.handleChange} size="small" required />
 
                     {context.artist && (
                         <>
@@ -126,7 +138,7 @@ export const ArtistFormModal: React.FC<ArtistFormModalProps> = (props) => {
                                 onChange={formik.handleChange}
                                 size="small"
                                 placeholder="Insira a URL do perfil"
-                                type='url'
+                                type="url"
                             />
                         </>
                     )}

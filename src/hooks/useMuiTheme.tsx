@@ -34,6 +34,9 @@ export const useMuiTheme = () => {
                         MuiList: { defaultProps: { sx: { backgroundColor: colors.background } } },
                         MuiDataGrid: {
                             styleOverrides: {
+                                root: {
+                                    "--DataGrid-t-color-interactive-focus": "transparent !important",
+                                },
                                 columnHeader: {
                                     color: colors.secondary,
                                 },
