@@ -9,18 +9,21 @@ import { Toolbar } from "@mui/x-data-grid"
 import { DataGridToolbar, toolbar_style } from "../../components/DataGridToolbar"
 import { EventTableCell } from "./EventTableCell"
 import { formatDate } from "../../tools/formatDate"
+import { getWeekNumber } from "../../tools/getWeekNumber"
+import { WeekNavigation } from "./WeekNavigation"
 
 interface EventsTableProps {}
 
 export const EventsTable: React.FC<EventsTableProps> = (props) => {
     const formContext = useFormModal()
 
+    const [week, setWeek] = useState(getWeekNumber(new Date().getTime()))
     const [loading, setLoading] = useState(false)
 
     const { data, isFetching, refetch } = useQuery<Event[]>({
         initialData: [],
-        queryKey: ["eventsData"],
-        queryFn: async () => (await api.get("/event", { params: { all: true } })).data,
+        queryKey: ["eventsData", week],
+        queryFn: async () => (await api.get("/event", { params: { week } })).data,
     })
 
     const columns: (GridColDef & { field: keyof Event | "actions" })[] = [
@@ -58,7 +61,13 @@ export const EventsTable: React.FC<EventsTableProps> = (props) => {
     }, [formContext.event])
 
     return (
-        <Box sx={{ flexDirection: "column", height: data.length * 550 + 100 }}>
+        <Box
+            sx={{
+                flexDirection: "column",
+                minHeight: 200,
+                height: data.length * 550 + 100,
+            }}
+        >
             <DataGrid
                 loading={isFetching || loading}
                 rows={data}
@@ -86,6 +95,11 @@ export const EventsTable: React.FC<EventsTableProps> = (props) => {
                                 add={() => formContext.open("event")}
                             />
                         </Toolbar>
+                    ),
+                    columnHeaders: () => (
+                        <Box sx={{ flexDirection: "column", marginBottom: -2 }}>
+                            <WeekNavigation selectedWeek={week} setSelectedWeek={setWeek} />
+                        </Box>
                     ),
                 }}
             />

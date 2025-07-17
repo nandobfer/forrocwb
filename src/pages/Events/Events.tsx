@@ -23,7 +23,11 @@ export const Events: React.FC<EventListProps> = (props) => {
             {isFetching ? (
                 <LinearProgress variant="indeterminate" />
             ) : data.length > 0 ? (
-                data.map((event) => <Typography key={event.id}>{event.title}</Typography>)
+                data.map((event) => (
+                    <Typography color="secondary" key={event.id}>
+                        {event.title}
+                    </Typography>
+                ))
             ) : (
                 <Typography color="textPrimary">Nenhum forró cadastrado essa semana</Typography>
             )}
