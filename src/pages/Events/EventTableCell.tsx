@@ -132,7 +132,7 @@ export const EventTableCell: React.FC<EventTableCellProps> = (props) => {
             </Box>
 
             <Menu open={!!menuAnchor} anchorEl={menuAnchor} onClose={closeMenu}>
-                <GridActionsCellItem label="Visualizar" showInMenu disabled icon={<Visibility />} />
+                {/* <GridActionsCellItem label="Visualizar" showInMenu disabled icon={<Visibility />} /> */}
                 <GridActionsCellItem label="Editar" showInMenu icon={<Edit />} onClick={() => onEditPress(event)} />
                 <GridActionsCellItem label="Deletar" showInMenu icon={<Delete />} onClick={() => onDeletePress(event.id)} />
             </Menu>

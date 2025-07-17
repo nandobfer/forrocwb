@@ -1,19 +1,18 @@
-import React, { useContext } from "react"
-import { Box, SpeedDial, SpeedDialAction, SpeedDialIcon } from "@mui/material"
+import React from "react"
+import { SpeedDial, SpeedDialAction, SpeedDialIcon } from "@mui/material"
 import { useUser } from "../hooks/useUser"
-import { Edit, EditOff, Event as EventIcon, Groups, Person } from "@mui/icons-material"
+import { Edit, EditOff, Event as EventIcon, Groups, Home, Person } from "@mui/icons-material"
 import { useNavigate } from "react-router-dom"
 import type { MuiIcon } from "../types/MuiIcon"
 import { adminRoutes } from "../Router"
 import { useDisclosure } from "@mantine/hooks"
-import FormModalContext from "../contexts/FormModalContext"
 import { ArtistFormModal } from "../pages/Artists/ArtistFormModal"
 import { BandFormModal } from "../pages/Bands/BandFormModal"
 import { EventFormModal } from "../pages/Events/EventFormModal"
 
 interface AdminDialProps {}
 
-export type AdminTarget = "event" | "band" | "artist"
+export type AdminTarget = "event" | "band" | "artist" | ""
 export interface AdminActionItem {
     label: string
     target: AdminTarget
@@ -24,23 +23,17 @@ const actions: AdminActionItem[] = [
     { label: "Evento", target: "event", icon: EventIcon },
     { label: "Banda", target: "band", icon: Groups },
     { label: "Artista", target: "artist", icon: Person },
+    { label: "Início", target: "", icon: Home },
 ]
 
 export const AdminDial: React.FC<AdminDialProps> = (props) => {
     const { user } = useUser()
     const navigate = useNavigate()
-    const formModalContext = useContext(FormModalContext)
 
-    const [createOpened, createHandlers] = useDisclosure(false)
     const [editOpened, editHandlers] = useDisclosure(false)
 
-    const handleCreateClick = (target: AdminTarget) => {
-        formModalContext.open(target)
-        createHandlers.close()
-    }
-
     const handleEditClick = (target: AdminTarget) => {
-        const route = adminRoutes.find((item) => item.id === target)
+        const route = target ? adminRoutes.find((item) => item.id === target) : { path: "/" }
         if (route) {
             navigate(route.path)
             editHandlers.close()

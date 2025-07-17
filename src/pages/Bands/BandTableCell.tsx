@@ -95,7 +95,7 @@ export const BandTableCell: React.FC<BandTableCellProps> = (props) => {
             </Box>
 
             <Menu open={!!menuAnchor} anchorEl={menuAnchor} onClose={closeMenu}>
-                <GridActionsCellItem label="Visualizar" showInMenu disabled icon={<Visibility />} />
+                {/* <GridActionsCellItem label="Visualizar" showInMenu disabled icon={<Visibility />} /> */}
                 <GridActionsCellItem label="Editar" showInMenu icon={<Edit />} onClick={() => onEditPress(band)} />
                 <GridActionsCellItem label="Deletar" showInMenu icon={<Delete />} onClick={() => onDeletePress(band.id)} />
             </Menu>

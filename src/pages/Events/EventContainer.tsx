@@ -1,0 +1,113 @@
+import React, { useState } from "react"
+import { Avatar, Box, Button, Chip, ClickAwayListener, IconButton, Menu, Tooltip, Typography } from "@mui/material"
+import type { Event } from "../../types/server/class/Event"
+import { AddPhotoAlternate, BrokenImage, Delete, Edit, Groups, Link, LocationPin, MoreVert, Person, Reply, Visibility } from "@mui/icons-material"
+import { GridActionsCellItem } from "@mui/x-data-grid"
+import dayjs from "dayjs"
+import { DescriptionText } from "../../components/DescriptionText"
+import { currencyMask } from "../../tools/numberMask"
+import { PendingInfoChip } from "../../components/PendingInfoChip"
+import { formatDate } from "../../tools/formatDate"
+import { EventLocation } from "../../components/EventLocation"
+import { MiniBand } from "../../components/MiniBand"
+import { MiniArtist } from "../../components/MiniArtist"
+import { WhoPlays } from "../../components/WhoPlays"
+
+interface EventContainerProps {
+    event: Event
+}
+
+export const EventContainer: React.FC<EventContainerProps> = (props) => {
+    const [menuAnchor, setMenuAnchor] = useState<HTMLButtonElement | null>(null)
+    const [showLocation, setShowLocation] = useState(false)
+
+    const event = props.event
+
+    const closeMenu = () => {
+        setMenuAnchor(null)
+    }
+
+    return (
+        <Box sx={{ flexDirection: "column", gap: 1, width: 1 }}>
+            <Box sx={{ alignItems: "center", justifyContent: "space-between", marginBottom: -1 }}>
+                <Box sx={{ flexDirection: "column", width: 1 }}>
+                    <Typography variant="subtitle2" sx={{ fontWeight: "bold" }}>
+                        {event.title}
+                    </Typography>
+                    <Box sx={{ justifyContent: "space-between", width: 1 }}>
+                        <Typography variant="body2" sx={{ fontWeight: "bold" }} color="primary">
+                            {dayjs(Number(event.datetime)).format("HH:mm")}
+                        </Typography>
+                        <Typography variant="body1" color="success" sx={{ fontWeight: "bold" }}>
+                            {event.price ? currencyMask(event.price) : "GRÁTIS"}
+                        </Typography>
+                    </Box>
+                </Box>
+
+                {/* <Box sx={{ marginBottom: 1, marginTop: 1, marginRight: -0.5 }}>
+                    <ClickAwayListener onClickAway={() => setShowLocation(false)}>
+                        <Tooltip
+                            title={<EventLocation location={event.location} />}
+                            open={showLocation}
+                            placement="bottom-start"
+                            slotProps={{ tooltip: { sx: { padding: 0, bgcolor: "transparent" } } }}
+                        >
+                            <IconButton size="small" onMouseEnter={() => setShowLocation(true)}>
+                                <LocationPin />
+                            </IconButton>
+                        </Tooltip>
+                    </ClickAwayListener>
+                </Box> */}
+            </Box>
+
+            {event.image && (
+                <Avatar
+                    src={event.image || undefined}
+                    sx={{ width: 1, height: 150, bgcolor: "background.paper", color: "primary.main" }}
+                    variant="rounded"
+                >
+                    <BrokenImage sx={{ width: 1, height: 1 }} />
+                </Avatar>
+            )}
+
+            <Typography variant="subtitle2">{event.description}</Typography>
+
+            {(event.bands.length > 0 || event.artists.length > 0) && <WhoPlays artists={event.artists} bands={event.bands} />}
+
+            <Box sx={{ justifyContent: "space-between", alignItems: "center" }}>
+                <ClickAwayListener onClickAway={() => setShowLocation(false)}>
+                    <Tooltip
+                        title={<EventLocation location={event.location} />}
+                        open={showLocation}
+                        placement="auto-end"
+                        slotProps={{ tooltip: { sx: { padding: 0, bgcolor: "transparent" } } }}
+                        // arrow={false}
+                    >
+                        <Button
+                            size="small"
+                            onClick={() => setShowLocation(true)}
+                            sx={{ borderBottom: "1px solid", borderRadius: 0 }}
+                            endIcon={<LocationPin sx={{ rotate: "180deg", transform: "scale(1, -1)" }} />}
+                            color="info"
+                        >
+                            Como chegar
+                        </Button>
+                    </Tooltip>
+                </ClickAwayListener>
+
+                {event.ticketUrl && (
+                    <Button
+                        size="small"
+                        onClick={() => window.open(event.ticketUrl!, "_new")}
+                        sx={{ borderBottom: "1px solid", borderRadius: 0, marginLeft: "auto" }}
+                        endIcon={<Reply sx={{ rotate: "180deg", transform: "scale(1, -1)" }} />}
+                    >
+                        Adquirir ingresso
+                    </Button>
+                )}
+            </Box>
+
+            <Menu open={!!menuAnchor} anchorEl={menuAnchor} onClose={closeMenu}></Menu>
+        </Box>
+    )
+}

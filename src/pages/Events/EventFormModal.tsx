@@ -1,39 +1,22 @@
-import React, { useContext, useEffect, useState } from "react"
-import {
-    Autocomplete,
-    Avatar,
-    Box,
-    Button,
-    Checkbox,
-    Chip,
-    CircularProgress,
-    Dialog,
-    IconButton,
-    MenuItem,
-    Skeleton,
-    Tab,
-    Tabs,
-    TextField,
-    Typography,
-} from "@mui/material"
+import React, { useEffect, useState } from "react"
+import { Autocomplete, Avatar, Box, Button, Checkbox, CircularProgress, Dialog, IconButton, Skeleton, Tab, Tabs, TextField } from "@mui/material"
 import { Title } from "../../components/Title"
-import { AddPhotoAlternate, BrokenImage, Close, Edit, Groups } from "@mui/icons-material"
+import { AddPhotoAlternate, Close, Edit } from "@mui/icons-material"
 import { useFormModal } from "../../hooks/useFormModal"
 import { useFormik } from "formik"
 import { useUser } from "../../hooks/useUser"
 import { useFileDialog, useMediaQuery } from "@mantine/hooks"
 import type { EventForm } from "../../types/server/class/Event"
 import { useQuery } from "@tanstack/react-query"
-import { Artist } from "../../types/server/class/Artist"
 import { getWeekNumber } from "../../tools/getWeekNumber"
 import type { Band } from "../../types/server/class/Band"
-import { DateTimePicker } from "@mui/x-date-pickers/DateTimePicker"
 import dayjs from "dayjs"
 import { searchCep } from "../../tools/searchCep"
 import MaskedInputComponent from "../../components/MaskedInput"
 import { MobileDateTimePicker } from "@mui/x-date-pickers/MobileDateTimePicker"
 import { currencyMask } from "../../tools/numberMask"
 import { handleCurrencyInput } from "../../tools/handleCurrencyInput"
+import type { Artist } from "../../types/server/class/Artist"
 
 interface EventFormModalProps {}
 

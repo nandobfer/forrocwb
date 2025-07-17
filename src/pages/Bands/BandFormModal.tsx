@@ -1,28 +1,14 @@
-import React, { useContext, useEffect, useState } from "react"
-import {
-    Autocomplete,
-    Avatar,
-    Box,
-    Button,
-    Checkbox,
-    Chip,
-    CircularProgress,
-    Dialog,
-    IconButton,
-    MenuItem,
-    Skeleton,
-    TextField,
-    Typography,
-} from "@mui/material"
+import React, { useEffect, useState } from "react"
+import { Autocomplete, Avatar, Box, Button, Checkbox, CircularProgress, Dialog, IconButton, Skeleton, TextField } from "@mui/material"
 import { Title } from "../../components/Title"
-import { BrokenImage, Close, Edit, Groups } from "@mui/icons-material"
+import { Close, Edit, Groups } from "@mui/icons-material"
 import { useFormModal } from "../../hooks/useFormModal"
 import { useFormik } from "formik"
 import { useUser } from "../../hooks/useUser"
 import { useFileDialog, useMediaQuery } from "@mantine/hooks"
 import type { BandForm } from "../../types/server/class/Band"
 import { useQuery } from "@tanstack/react-query"
-import { Artist } from "../../types/server/class/Artist"
+import type { Artist } from "../../types/server/class/Artist"
 
 interface BandFormModalProps {}
 
@@ -30,10 +16,8 @@ const endpoint = "/band"
 
 export const BandFormModal: React.FC<BandFormModalProps> = (props) => {
     const [loading, setLoading] = useState(false)
-    const [imageError, setImageError] = useState(false)
     const [imageLoading, setImageLoading] = useState(false)
 
-    const isMobile = useMediaQuery("(orientation: portrait)")
     const context = useFormModal()
 
     const { data: artists, isFetching: loadingArtists } = useQuery<Artist[]>({

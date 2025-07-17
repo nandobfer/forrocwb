@@ -1,12 +1,12 @@
-import React, { useContext, useEffect, useState } from "react"
-import { Avatar, Box, Button, CircularProgress, Dialog, IconButton, Skeleton, TextField, Typography } from "@mui/material"
-import { type Artist, type ArtistForm } from "../../types/server/class/Artist"
+import React, { useEffect, useState } from "react"
+import { Avatar, Box, Button, CircularProgress, Dialog, IconButton, Skeleton, TextField } from "@mui/material"
 import { Title } from "../../components/Title"
-import { BrokenImage, Close, Edit } from "@mui/icons-material"
+import { Close, Edit } from "@mui/icons-material"
 import { useFormModal } from "../../hooks/useFormModal"
 import { useFormik } from "formik"
 import { useUser } from "../../hooks/useUser"
 import { useFileDialog } from "@mantine/hooks"
+import type { ArtistForm } from "../../types/server/class/Artist"
 
 interface ArtistFormModalProps {}
 
@@ -14,7 +14,6 @@ const endpoint = "/artist"
 
 export const ArtistFormModal: React.FC<ArtistFormModalProps> = (props) => {
     const [loading, setLoading] = useState(false)
-    const [imageError, setImageError] = useState(false)
     const [imageLoading, setImageLoading] = useState(false)
 
     const context = useFormModal()

@@ -30,7 +30,7 @@ export const Providers: React.FC<ProvidersProps> = (props) => {
                                 <UserProvider>
                                     <FormModalProvider>
                                         <Header />
-                                        <Box sx={{ flexDirection: "column", overflowY: "auto", padding: 2 }}>{props.children}</Box>
+                                        <Box sx={{ flexDirection: "column", overflowY: "auto", padding: 2, height: 1 }}>{props.children}</Box>
                                         <Snackbar />
                                         <ConfirmDialog />
                                         <AdminDial />

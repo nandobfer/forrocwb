@@ -1,12 +1,12 @@
-import React, { useEffect, useRef, useState } from "react"
+import React from "react"
 import { Box, Button, CircularProgress, TextField, Typography } from "@mui/material"
 import { useFormik } from "formik"
-import { type LoginForm } from "../types/server/class/User"
 import { api } from "../backend/api"
 import { useMutation } from "@tanstack/react-query"
 import { useUser } from "../hooks/useUser"
 import * as yup from "yup"
 import type { AxiosError } from "axios"
+import type { LoginForm } from "../types/server/class/User"
 
 interface LoginFormMenuProps {}
 

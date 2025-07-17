@@ -2,7 +2,6 @@ import React, { useEffect, useState } from "react"
 import { Box, LinearProgress, Paper, Typography } from "@mui/material"
 import { useQuery } from "@tanstack/react-query"
 import { api } from "../../backend/api"
-import { Artist } from "../../types/server/class/Artist"
 import { DataGrid, Toolbar, type GridColDef } from "@mui/x-data-grid"
 import { CellAvatar } from "../../components/CellAvatar"
 import { DataGridToolbar, toolbar_style } from "../../components/DataGridToolbar"
@@ -13,6 +12,7 @@ import { useConfirmDialog } from "burgos-confirm"
 import { Delete, Edit, Instagram, TextFormat, Visibility } from "@mui/icons-material"
 import { PendingInfoChip } from "../../components/PendingInfoChip"
 import { DescriptionText } from "../../components/DescriptionText"
+import type { Artist } from "../../types/server/class/Artist"
 
 interface ArtistsTableProps {}
 
@@ -81,7 +81,7 @@ export const ArtistsTable: React.FC<ArtistsTableProps> = (props) => {
             headerName: "Ações",
             getActions(params) {
                 return [
-                    <GridActionsCellItem label="Visualizar" showInMenu onClick={() => onDeletePress(params.row.id)} disabled icon={<Visibility />} />,
+                    // <GridActionsCellItem label="Visualizar" showInMenu onClick={() => onDeletePress(params.row.id)} disabled icon={<Visibility />} />,
                     <GridActionsCellItem label="Editar" showInMenu onClick={() => onEditPress(params.row)} icon={<Edit />} />,
                     <GridActionsCellItem label="Deletar" showInMenu onClick={() => onDeletePress(params.row.id)} icon={<Delete />} />,
                 ]

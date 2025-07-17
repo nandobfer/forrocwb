@@ -1,6 +1,7 @@
 import { Prisma } from "@prisma/client";
 import { Band } from "./Band";
 import { Artist } from "./Artist";
+import { UploadedFile } from "express-fileupload";
 import { WithoutFunctions } from "./helpers";
 export declare const event_include: {
     bands: {
@@ -43,5 +44,6 @@ export declare class Event {
     constructor(data: EventPrisma);
     load(data: EventPrisma): void;
     update(data: Partial<EventForm>): Promise<void>;
+    updateImage(file: UploadedFile): Promise<string>;
     delete(): Promise<boolean>;
 }
