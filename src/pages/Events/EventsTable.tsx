@@ -43,7 +43,7 @@ export const EventsTable: React.FC<EventsTableProps> = (props) => {
                 "\n" +
                 row.bands.map((item) => item.name).join("\n") +
                 "\n" +
-                row.price +
+                (row.price || "gratis") +
                 "\n" +
                 row.ticketUrl,
         },
