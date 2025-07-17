@@ -81,6 +81,7 @@ export const EventsTable: React.FC<EventsTableProps> = (props) => {
                 rowHeight={550}
                 showToolbar
                 hideFooterPagination
+                rowSelection={false}
                 // autoPageSize
                 density="compact"
                 slotProps={{ loadingOverlay: { sx: { height: 9999 } } }}
