@@ -64,7 +64,7 @@ export const EventTableCell: React.FC<EventTableCellProps> = (props) => {
                     <Typography variant="subtitle2" sx={{ fontWeight: "bold" }}>
                         {event.title}
                     </Typography>
-                    <Typography variant="body2" sx={{ fontWeight: 500 }} color="info">
+                    <Typography variant="body2" sx={{ fontWeight: 500 }} color="primary">
                         {formatDate(event.datetime)}
                     </Typography>
                 </Box>
@@ -83,13 +83,13 @@ export const EventTableCell: React.FC<EventTableCellProps> = (props) => {
             <DescriptionText text={event.description} />
 
             <Box sx={{ gap: 1, maxWidth: 1, overflowX: "auto" }}>
-                {event.bands.length === 0 ? <PendingInfoChip text="nenhuma banda presente" icon={Groups} /> : <Groups />}
+                {event.bands.length === 0 ? <PendingInfoChip text="nenhuma banda selecionada" icon={Groups} /> : <Groups />}
                 {event.bands.map((band) => (
                     <Chip size="small" label={band.name} key={band.id} color="primary" />
                 ))}
             </Box>
             <Box sx={{ gap: 1, maxWidth: 1, overflowX: "auto" }}>
-                {event.artists.length === 0 ? <PendingInfoChip text="nenhum artista avulso presente" icon={Person} /> : <Person />}
+                {event.artists.length === 0 ? <PendingInfoChip text="nenhum artista selecionado" icon={Person} /> : <Person />}
                 {event.artists.map((artist) => (
                     <Chip size="small" label={artist.name} key={artist.id} color="primary" />
                 ))}
@@ -110,7 +110,7 @@ export const EventTableCell: React.FC<EventTableCellProps> = (props) => {
                         Ingresso
                     </Button>
                 ) : (
-                    <PendingInfoChip text="Link de ingresso pendente" icon={Link} />
+                    <PendingInfoChip text="ingresso" icon={Link} />
                 )}
             </Box>
 
