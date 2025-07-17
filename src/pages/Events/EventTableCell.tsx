@@ -1,16 +1,17 @@
 import React, { useState } from "react"
-import { Avatar, Box, Button, Chip, IconButton, Menu, Typography } from "@mui/material"
+import { Avatar, Box, Button, Chip, ClickAwayListener, IconButton, Menu, Tooltip, Typography } from "@mui/material"
 import type { Event } from "../../types/server/class/Event"
 import { useUser } from "../../hooks/useUser"
 import { useConfirmDialog } from "burgos-confirm"
 import { useFormModal } from "../../hooks/useFormModal"
-import { AddPhotoAlternate, BrokenImage, Delete, Edit, Groups, Link, MoreVert, Person, Reply, Visibility } from "@mui/icons-material"
+import { AddPhotoAlternate, BrokenImage, Delete, Edit, Groups, Link, LocationPin, MoreVert, Person, Reply, Visibility } from "@mui/icons-material"
 import { GridActionsCellItem } from "@mui/x-data-grid"
 import dayjs from "dayjs"
 import { DescriptionText } from "../../components/DescriptionText"
 import { currencyMask } from "../../tools/numberMask"
 import { PendingInfoChip } from "../../components/PendingInfoChip"
 import { formatDate } from "../../tools/formatDate"
+import { EventLocation } from "../../components/EventLocation"
 
 interface EventTableCellProps {
     event: Event
@@ -25,6 +26,7 @@ export const EventTableCell: React.FC<EventTableCellProps> = (props) => {
     const formContext = useFormModal()
 
     const [menuAnchor, setMenuAnchor] = useState<HTMLButtonElement | null>(null)
+    const [showLocation, setShowLocation] = useState(false)
 
     const event = props.event
 
@@ -68,9 +70,24 @@ export const EventTableCell: React.FC<EventTableCellProps> = (props) => {
                         {formatDate(event.datetime)}
                     </Typography>
                 </Box>
-                <IconButton size="small" onClick={(ev) => setMenuAnchor(ev.currentTarget)} sx={{ margin: 1, marginRight: 0 }}>
-                    <MoreVert />
-                </IconButton>
+
+                <Box sx={{ marginBottom: 1, marginTop: 1, marginRight: -0.5 }}>
+                    <ClickAwayListener onClickAway={() => setShowLocation(false)}>
+                        <Tooltip
+                            title={<EventLocation location={event.location} />}
+                            open={showLocation}
+                            placement="bottom-start"
+                            slotProps={{ tooltip: { sx: { padding: 0, bgcolor: "transparent" } } }}
+                        >
+                            <IconButton size="small" onMouseEnter={() => setShowLocation(true)}>
+                                <LocationPin />
+                            </IconButton>
+                        </Tooltip>
+                    </ClickAwayListener>
+                    <IconButton size="small" onClick={(ev) => setMenuAnchor(ev.currentTarget)}>
+                        <MoreVert />
+                    </IconButton>
+                </Box>
             </Box>
 
             <Avatar
