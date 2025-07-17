@@ -8,6 +8,7 @@ import type { Event } from "../../types/server/class/Event"
 import { Toolbar } from "@mui/x-data-grid"
 import { DataGridToolbar, toolbar_style } from "../../components/DataGridToolbar"
 import { EventTableCell } from "./EventTableCell"
+import { formatDate } from "../../tools/formatDate"
 
 interface EventsTableProps {}
 
@@ -31,6 +32,20 @@ export const EventsTable: React.FC<EventsTableProps> = (props) => {
             renderCell(params) {
                 return <EventTableCell event={params.row} loading={loading} refetch={refetch} setLoading={setLoading} />
             },
+            valueFormatter: (_, row: Event) =>
+                row.title +
+                "\n" +
+                row.description +
+                "\n" +
+                formatDate(row.datetime) +
+                "\n" +
+                row.artists.map((item) => item.name).join("\n") +
+                "\n" +
+                row.bands.map((item) => item.name).join("\n") +
+                "\n" +
+                row.price +
+                "\n" +
+                row.ticketUrl,
         },
     ]
 

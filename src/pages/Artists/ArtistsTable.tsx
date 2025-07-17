@@ -46,6 +46,7 @@ export const ArtistsTable: React.FC<ArtistsTableProps> = (props) => {
             headerName: "Nome",
             flex: 1,
             display: "flex",
+            valueFormatter: (_, row: Artist) => row.name + "\n" + row.description + "\n" + row.instagram,
             renderCell(params) {
                 const artist = params.row as Artist
                 const ig_base_url = "https://instagram.com/"

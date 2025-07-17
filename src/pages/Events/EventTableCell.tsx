@@ -10,6 +10,7 @@ import dayjs from "dayjs"
 import { DescriptionText } from "../../components/DescriptionText"
 import { currencyMask } from "../../tools/numberMask"
 import { PendingInfoChip } from "../../components/PendingInfoChip"
+import { formatDate } from "../../tools/formatDate"
 
 interface EventTableCellProps {
     event: Event
@@ -57,14 +58,14 @@ export const EventTableCell: React.FC<EventTableCellProps> = (props) => {
     }
 
     return (
-        <Box sx={{ flexDirection: "column", gap: 1, width: 1,  }}>
+        <Box sx={{ flexDirection: "column", gap: 1, width: 1 }}>
             <Box sx={{ alignItems: "center", justifyContent: "space-between", marginBottom: -1 }}>
                 <Box sx={{ flexDirection: "column" }}>
                     <Typography variant="subtitle2" sx={{ fontWeight: "bold" }}>
                         {event.title}
                     </Typography>
-                    <Typography variant="body2" sx={{fontWeight: 500}}  color="info">
-                        {dayjs(Number(event.datetime)).format("DD/MM/YYYY - HH:mm")}
+                    <Typography variant="body2" sx={{ fontWeight: 500 }} color="info">
+                        {formatDate(event.datetime)}
                     </Typography>
                 </Box>
                 <IconButton size="small" onClick={(ev) => setMenuAnchor(ev.currentTarget)} sx={{ margin: 1, marginRight: 0 }}>
@@ -72,11 +73,14 @@ export const EventTableCell: React.FC<EventTableCellProps> = (props) => {
                 </IconButton>
             </Box>
 
-            <Avatar src={event.image || undefined} sx={{ width: 1, height: 150, bgcolor: "background.paper", color: "primary.main" }} variant="rounded">
+            <Avatar
+                src={event.image || undefined}
+                sx={{ width: 1, height: 150, bgcolor: "background.paper", color: "primary.main" }}
+                variant="rounded"
+            >
                 <BrokenImage sx={{ width: 1, height: 1 }} />
             </Avatar>
             <DescriptionText text={event.description} />
-
 
             <Box sx={{ gap: 1, maxWidth: 1, overflowX: "auto" }}>
                 {event.bands.length === 0 ? <PendingInfoChip text="nenhuma banda presente" icon={Groups} /> : <Groups />}

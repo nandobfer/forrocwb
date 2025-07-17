@@ -29,6 +29,8 @@ export const BandsTable: React.FC<BandsTableProps> = (props) => {
             headerName: "Nome",
             flex: 1,
             display: "flex",
+            valueFormatter: (_, row: Band) =>
+                row.name + "\n" + row.description + "\n" + row.instagram + "\n" + row.artists.map((item) => item.name).join("\n"),
             renderCell(params) {
                 return <BandTableCell band={params.row} loading={loading} refetch={refetch} setLoading={setLoading} />
             },
