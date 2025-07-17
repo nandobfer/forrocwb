@@ -74,7 +74,7 @@ export const EventsTable: React.FC<EventsTableProps> = (props) => {
                 columns={columns}
                 initialState={{
                     pagination: { paginationModel: { page: 0, pageSize: 100 } },
-                    sorting: { sortModel: [{ field: "name", sort: "asc" }] },
+                    sorting: { sortModel: [{ field: "title", sort: "asc" }] },
                 }}
                 pageSizeOptions={[10, 20, 50]}
                 sx={{ border: 0 }}

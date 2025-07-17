@@ -34,7 +34,7 @@ const StyledTextField = styled(TextField)<{
 }>(({ theme, ownerState }) => ({
     gridArea: "1 / 1",
     overflowX: "clip",
-    width: ownerState.expanded ? 200 : "var(--trigger-width)",
+    width: ownerState.expanded ? 150 : "var(--trigger-width)",
     opacity: ownerState.expanded ? 1 : 0,
     transition: theme.transitions.create(["width", "opacity"]),
 }))
