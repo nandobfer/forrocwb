@@ -7,6 +7,7 @@ import { DataGrid, type GridColDef } from "@mui/x-data-grid"
 import type { Event } from "../../types/server/class/Event"
 import { Toolbar } from "@mui/x-data-grid"
 import { DataGridToolbar, toolbar_style } from "../../components/DataGridToolbar"
+import { EventTableCell } from "./EventTableCell"
 
 interface EventsTableProps {}
 
@@ -18,7 +19,7 @@ export const EventsTable: React.FC<EventsTableProps> = (props) => {
     const { data, isFetching, refetch } = useQuery<Event[]>({
         initialData: [],
         queryKey: ["eventsData"],
-        queryFn: async () => (await api.get("/event")).data,
+        queryFn: async () => (await api.get("/event", { params: { all: true } })).data,
     })
 
     const columns: (GridColDef & { field: keyof Event | "actions" })[] = [
@@ -27,9 +28,9 @@ export const EventsTable: React.FC<EventsTableProps> = (props) => {
             headerName: "Nome",
             flex: 1,
             display: "flex",
-            // renderCell(params) {
-            //     return <BandTableCell band={params.row} loading={loading} refetch={refetch} setLoading={setLoading} />
-            // },
+            renderCell(params) {
+                return <EventTableCell event={params.row} loading={loading} refetch={refetch} setLoading={setLoading} />
+            },
         },
     ]
 
@@ -42,7 +43,7 @@ export const EventsTable: React.FC<EventsTableProps> = (props) => {
     }, [formContext.event])
 
     return (
-        <Box sx={{ flexDirection: "column" }}>
+        <Box sx={{ flexDirection: "column", height: data.length * 550 + 100 }}>
             <DataGrid
                 loading={isFetching || loading}
                 rows={data}
@@ -53,7 +54,7 @@ export const EventsTable: React.FC<EventsTableProps> = (props) => {
                 }}
                 pageSizeOptions={[10, 20, 50]}
                 sx={{ border: 0 }}
-                // rowHeight={470}
+                rowHeight={550}
                 showToolbar
                 hideFooterPagination
                 // autoPageSize

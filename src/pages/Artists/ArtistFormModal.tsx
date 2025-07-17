@@ -79,11 +79,7 @@ export const ArtistFormModal: React.FC<ArtistFormModalProps> = (props) => {
     }, [context.isOpen])
 
     return (
-        <Dialog
-            open={context.isOpen === "artist"}
-            onClose={context.close}
-            slotProps={{ paper: { sx: { maxWidth: "100vw", display: "flex", padding: 2, flexDirection: "column", gap: 2 }, elevation: undefined } }}
-        >
+        <Dialog open={context.isOpen === "artist"} onClose={context.close}>
             <Title
                 name={context.artist?.name ? `Editar ${context.artist.name}` : "Cadastrar artista"}
                 right={
@@ -100,7 +96,10 @@ export const ArtistFormModal: React.FC<ArtistFormModalProps> = (props) => {
                             {imageLoading ? (
                                 <Skeleton variant="rounded" width={150} height={150} animation="wave" sx={{ borderRadius: "100%" }} />
                             ) : (
-                                <Avatar src={context.artist.image || undefined} sx={{ width: 150, aspectRatio: 1, height: "auto" }}></Avatar>
+                                <Avatar
+                                    src={context.artist.image || undefined}
+                                    sx={{ width: 150, aspectRatio: 1, height: "auto", bgcolor: "background.default", color: "primary.main" }}
+                                ></Avatar>
                             )}
                             <Edit
                                 sx={{

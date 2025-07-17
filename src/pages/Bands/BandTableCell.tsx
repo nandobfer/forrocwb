@@ -7,6 +7,7 @@ import { useConfirmDialog } from "burgos-confirm"
 import { useUser } from "../../hooks/useUser"
 import { useFormModal } from "../../hooks/useFormModal"
 import { PendingInfoChip } from "../../components/PendingInfoChip"
+import { DescriptionText } from "../../components/DescriptionText"
 
 interface BandTableCellProps {
     band: Band
@@ -71,23 +72,11 @@ export const BandTableCell: React.FC<BandTableCellProps> = (props) => {
                     <MoreVert />
                 </IconButton>
             </Box>
-            <Avatar src={band.image || undefined} sx={{ width: 1, height: 150 }} variant="rounded"></Avatar>
+            <Avatar src={band.image || undefined} sx={{ width: 1, height: 150 }} variant="rounded">
+                <Groups sx={{ width: 1, height: 1 }} />
+            </Avatar>
             <Box sx={{ flexDirection: "column" }}>
-                <Typography
-                    variant="caption"
-                    sx={{
-                        display: "-webkit-box",
-                        WebkitBoxOrient: "vertical",
-                        WebkitLineClamp: 3,
-                        overflow: "hidden",
-                        textOverflow: "ellipsis",
-                        lineHeight: 1.5,
-                        maxHeight: "4.5em",
-                        whiteSpace: "break-spaces",
-                    }}
-                >
-                    {band.description || <PendingInfoChip text="descrição pendente" icon={TextFormat} />}
-                </Typography>
+                <DescriptionText text={band.description} />
                 <Typography
                     variant="subtitle2"
                     color={ig_user ? "primary" : undefined}

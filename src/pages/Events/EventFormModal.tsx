@@ -31,10 +31,14 @@ import { DateTimePicker } from "@mui/x-date-pickers/DateTimePicker"
 import dayjs from "dayjs"
 import { searchCep } from "../../tools/searchCep"
 import MaskedInputComponent from "../../components/MaskedInput"
+import { MobileDateTimePicker } from "@mui/x-date-pickers/MobileDateTimePicker"
+import { currencyMask } from "../../tools/numberMask"
+import { handleCurrencyInput } from "../../tools/handleCurrencyInput"
 
 interface EventFormModalProps {}
 
 const endpoint = "/event"
+const now = new Date().getTime().toString()
 
 export const EventFormModal: React.FC<EventFormModalProps> = (props) => {
     const [loading, setLoading] = useState(false)
@@ -92,7 +96,7 @@ export const EventFormModal: React.FC<EventFormModalProps> = (props) => {
             : {
                   title: "",
                   description: "",
-                  datetime: new Date().getTime().toString(),
+                  datetime: now,
                   location: { cep: "", complement: "", district: "", number: "", street: "" },
                   artists: [],
                   bands: [],
@@ -103,10 +107,16 @@ export const EventFormModal: React.FC<EventFormModalProps> = (props) => {
         async onSubmit(values, formikHelpers) {
             if (loading) return
 
+            if (!values.title || !values.datetime) {
+                // ! mostrar erro
+                return
+            }
+
             try {
                 setLoading(true)
 
                 values.week = getWeekNumber(values.datetime)
+                console.log(values)
 
                 const response = context.event
                     ? await api.patch(endpoint, values, { params: { event_id: context.event.id } })
@@ -130,11 +140,12 @@ export const EventFormModal: React.FC<EventFormModalProps> = (props) => {
         return () => {
             formik.resetForm()
             fileDialog.reset()
+            setCurrentTab("basic")
         }
     }, [context.isOpen])
 
     useEffect(() => {
-        if (formik.values.location.cep.length === 10 && formik.touched.location?.cep) {
+        if (formik.values.location.cep.length === 10) {
             setSearchingCep(true)
             searchCep(formik.values.location.cep)
                 .then((result) => {
@@ -148,11 +159,7 @@ export const EventFormModal: React.FC<EventFormModalProps> = (props) => {
     }, [formik.values.location.cep])
 
     return (
-        <Dialog
-            open={context.isOpen === "event"}
-            onClose={context.close}
-            slotProps={{ paper: { sx: { maxWidth: "100vw", display: "flex", padding: 2, flexDirection: "column", gap: 2 }, elevation: undefined } }}
-        >
+        <Dialog open={context.isOpen === "event"} onClose={context.close}>
             <Title
                 name={context.event?.title ? `Editar ${context.event.title}` : "Cadastrar evento"}
                 right={
@@ -162,14 +169,13 @@ export const EventFormModal: React.FC<EventFormModalProps> = (props) => {
                 }
             />
 
+            <Tabs value={currentTab} onChange={(_, value) => setCurrentTab(value)} variant="fullWidth">
+                <Tab label="Informações básicas" value={"basic"} />
+                <Tab label="Localização" value={"location"} disabled={!context.event} />
+                <Tab label="Detalhes" value={"details"} disabled={!context.event} />
+            </Tabs>
             <Box sx={{ flexDirection: "column", gap: 2, maxHeight: "60vh", overflowY: "auto", margin: -2, padding: 2 }}>
                 <form onSubmit={formik.handleSubmit}>
-                    <Tabs value={currentTab} onChange={(_, value) => setCurrentTab(value)} variant="fullWidth">
-                        <Tab label="Informações básicas" value={"basic"} />
-                        <Tab label="Localização" value={"location"} />
-                        <Tab label="Detalhes" value={"details"} />
-                    </Tabs>
-
                     {context.event && currentTab === "basic" && (
                         <Button onClick={() => fileDialog.open()} sx={{ width: 1, alignSelf: "center", position: "relative" }}>
                             {imageLoading ? (
@@ -186,8 +192,8 @@ export const EventFormModal: React.FC<EventFormModalProps> = (props) => {
                             <Edit
                                 sx={{
                                     position: "absolute",
-                                    top: 10,
-                                    right: 10,
+                                    top: 15,
+                                    right: 15,
                                     color: "background.default",
                                     bgcolor: "primary.main",
                                     borderRadius: "100%",
@@ -201,11 +207,14 @@ export const EventFormModal: React.FC<EventFormModalProps> = (props) => {
 
                     {currentTab === "basic" && (
                         <>
-                            <DateTimePicker
+                            <MobileDateTimePicker
                                 label="Data e hora"
                                 slotProps={{ textField: { size: "small", required: true } }}
                                 value={dayjs(Number(formik.values.datetime))}
                                 onChange={(value) => formik.setFieldValue("datetime", value?.toDate().getTime().toString())}
+                                ampm={false}
+                                // disablePast
+                                orientation="portrait"
                             />
 
                             <TextField label="Nome" value={formik.values.title} name="title" onChange={formik.handleChange} size="small" required />
@@ -235,7 +244,6 @@ export const EventFormModal: React.FC<EventFormModalProps> = (props) => {
                                 name="location.cep"
                                 onChange={formik.handleChange}
                                 size="small"
-                                required
                                 type="tel"
                                 slotProps={{
                                     input: {
@@ -251,17 +259,15 @@ export const EventFormModal: React.FC<EventFormModalProps> = (props) => {
                                 name="location.street"
                                 onChange={formik.handleChange}
                                 size="small"
-                                required
                             />
 
-                            <Box>
+                            <Box sx={{ gap: 2 }}>
                                 <TextField
                                     label="Bairro"
                                     value={formik.values.location.district}
                                     name="location.district"
                                     onChange={formik.handleChange}
                                     size="small"
-                                    required
                                     sx={{ flex: 0.7 }}
                                 />
                                 <TextField
@@ -270,7 +276,6 @@ export const EventFormModal: React.FC<EventFormModalProps> = (props) => {
                                     name="location.number"
                                     onChange={formik.handleChange}
                                     size="small"
-                                    required
                                     sx={{ flex: 0.3 }}
                                 />
                             </Box>
@@ -288,11 +293,12 @@ export const EventFormModal: React.FC<EventFormModalProps> = (props) => {
                         <>
                             <TextField
                                 label="Preço"
-                                value={formik.values.price}
+                                value={currencyMask(formik.values.price)}
                                 name="price"
-                                onChange={formik.handleChange}
+                                onChange={(ev) => {
+                                    formik.setFieldValue("price", handleCurrencyInput(ev.target.value))
+                                }}
                                 size="small"
-                                required
                                 type="tel"
                             />
                             <TextField
@@ -301,13 +307,13 @@ export const EventFormModal: React.FC<EventFormModalProps> = (props) => {
                                 name="ticketUrl"
                                 onChange={formik.handleChange}
                                 size="small"
-                                required
                                 type="url"
+                                placeholder="Link para aquisição do ingresso"
                             />
                             <Autocomplete
                                 options={bands}
                                 renderInput={({ inputProps, ...params }) => (
-                                    <TextField {...params} label="Bandas" size="small" inputProps={{ ...inputProps, readOnly: true }} />
+                                    <TextField {...params} label="Bandas" size="small" inputProps={{ ...inputProps, readOnly: !!isMobile }} />
                                 )}
                                 getOptionKey={(option) => option.id}
                                 getOptionLabel={(option) => option.name}
@@ -330,7 +336,7 @@ export const EventFormModal: React.FC<EventFormModalProps> = (props) => {
                             <Autocomplete
                                 options={artists}
                                 renderInput={({ inputProps, ...params }) => (
-                                    <TextField {...params} label="Artistas" size="small" inputProps={{ ...inputProps, readOnly: true }} />
+                                    <TextField {...params} label="Artistas" size="small" inputProps={{ ...inputProps, readOnly: !!isMobile }} />
                                 )}
                                 getOptionKey={(option) => option.id}
                                 getOptionLabel={(option) => option.name}

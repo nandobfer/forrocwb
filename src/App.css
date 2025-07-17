@@ -66,6 +66,10 @@ section {
     text-transform: none !important;
 }
 
+.MuiTab-root {
+    text-transform: none !important;
+}
+
 img {
     object-fit: contain;
 }

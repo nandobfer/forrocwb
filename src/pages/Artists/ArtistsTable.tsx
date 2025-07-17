@@ -12,6 +12,7 @@ import { useUser } from "../../hooks/useUser"
 import { useConfirmDialog } from "burgos-confirm"
 import { Delete, Edit, Instagram, TextFormat, Visibility } from "@mui/icons-material"
 import { PendingInfoChip } from "../../components/PendingInfoChip"
+import { DescriptionText } from "../../components/DescriptionText"
 
 interface ArtistsTableProps {}
 
@@ -58,22 +59,7 @@ export const ArtistsTable: React.FC<ArtistsTableProps> = (props) => {
                 return (
                     <Box sx={{ flexDirection: "column", gap: 0 }}>
                         <Typography variant="subtitle2">{artist.name}</Typography>
-                        <Typography
-                            variant="caption"
-                            sx={{
-                                display: "-webkit-box",
-                                WebkitBoxOrient: "vertical",
-                                WebkitLineClamp: 3,
-                                overflow: "hidden",
-                                textOverflow: "ellipsis",
-                                maxWidth: 240,
-                                lineHeight: 1.5,
-                                maxHeight: "4.5em",
-                                whiteSpace: "normal",
-                            }}
-                        >
-                            {artist.description || <PendingInfoChip text="descrição pendente" icon={TextFormat} />}
-                        </Typography>
+                        <DescriptionText text={artist.description} />
                         <Typography
                             variant="subtitle2"
                             color={ig_user ? "primary" : undefined}

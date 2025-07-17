@@ -102,11 +102,7 @@ export const BandFormModal: React.FC<BandFormModalProps> = (props) => {
     }, [context.isOpen])
 
     return (
-        <Dialog
-            open={context.isOpen === "band"}
-            onClose={context.close}
-            slotProps={{ paper: { sx: { maxWidth: "100vw", display: "flex", padding: 2, flexDirection: "column", gap: 2 }, elevation: undefined } }}
-        >
+        <Dialog open={context.isOpen === "band"} onClose={context.close}>
             <Title
                 name={context.band?.name ? `Editar ${context.band.name}` : "Cadastrar banda"}
                 right={
@@ -134,8 +130,8 @@ export const BandFormModal: React.FC<BandFormModalProps> = (props) => {
                             <Edit
                                 sx={{
                                     position: "absolute",
-                                    top: 10,
-                                    right: 10,
+                                    top: 15,
+                                    right: 15,
                                     color: "background.default",
                                     bgcolor: "primary.main",
                                     borderRadius: "100%",

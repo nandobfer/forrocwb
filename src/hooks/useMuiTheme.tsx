@@ -36,6 +36,7 @@ export const useMuiTheme = () => {
                             styleOverrides: {
                                 root: {
                                     "--DataGrid-t-color-interactive-focus": "transparent !important",
+                                    "--DataGrid-hasScrollY": "0 !important",
                                 },
                                 columnHeader: {
                                     color: colors.secondary,
@@ -48,6 +49,16 @@ export const useMuiTheme = () => {
                         MuiAutocomplete: {
                             styleOverrides: {
                                 listbox: { width: "100%", backgroundColor: colors.background },
+                            },
+                        },
+                        MuiDialog: {
+                            defaultProps: {
+                                slotProps: {
+                                    paper: {
+                                        sx: { maxWidth: "90vw", display: "flex", padding: 2, flexDirection: "column", gap: 2 },
+                                        elevation: undefined,
+                                    },
+                                },
                             },
                         },
                         // MuiButton: { styleOverrides: { contained: { color: colors.secondary } } },
