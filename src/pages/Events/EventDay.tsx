@@ -28,6 +28,7 @@ export const EventDay: React.FC<EventDayProps> = ({ day, index }) => {
                     borderTopRightRadius: 50,
                     borderTopLeftRadius: 50,
                     bgcolor: isToday ? "primary.main" : theme.palette.divider,
+                    cursor: "col-resize",
                 }}
             >
                 <Typography variant="h6" sx={{ alignSelf: "center" }}>
