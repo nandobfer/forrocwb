@@ -18,6 +18,7 @@ export const BandFormModal: React.FC<BandFormModalProps> = (props) => {
     const [loading, setLoading] = useState(false)
     const [imageLoading, setImageLoading] = useState(false)
 
+    const isMobile = useMediaQuery("(orientation: portrait)")
     const context = useFormModal()
 
     const { data: artists, isFetching: loadingArtists } = useQuery<Artist[]>({
@@ -200,7 +201,7 @@ export const BandFormModal: React.FC<BandFormModalProps> = (props) => {
                             <Autocomplete
                                 options={artists}
                                 renderInput={({ inputProps, ...params }) => (
-                                    <TextField {...params} label="Artistas" size="small" inputProps={{ ...inputProps, readOnly: true }} />
+                                    <TextField {...params} label="Artistas" size="small" inputProps={{ ...inputProps, readOnly: isMobile }} />
                                 )}
                                 getOptionKey={(option) => option.id}
                                 getOptionLabel={(option) => option.name}

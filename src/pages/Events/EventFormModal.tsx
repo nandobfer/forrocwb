@@ -296,7 +296,7 @@ export const EventFormModal: React.FC<EventFormModalProps> = (props) => {
                             <Autocomplete
                                 options={bands}
                                 renderInput={({ inputProps, ...params }) => (
-                                    <TextField {...params} label="Bandas" size="small" inputProps={{ ...inputProps, readOnly: !!isMobile }} />
+                                    <TextField {...params} label="Bandas" size="small" inputProps={{ ...inputProps, readOnly: isMobile }} />
                                 )}
                                 getOptionKey={(option) => option.id}
                                 getOptionLabel={(option) => option.name}
@@ -319,7 +319,7 @@ export const EventFormModal: React.FC<EventFormModalProps> = (props) => {
                             <Autocomplete
                                 options={artists}
                                 renderInput={({ inputProps, ...params }) => (
-                                    <TextField {...params} label="Artistas" size="small" inputProps={{ ...inputProps, readOnly: !!isMobile }} />
+                                    <TextField {...params} label="Artistas" size="small" inputProps={{ ...inputProps, readOnly: isMobile }} />
                                 )}
                                 getOptionKey={(option) => option.id}
                                 getOptionLabel={(option) => option.name}

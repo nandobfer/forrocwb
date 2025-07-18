@@ -278,7 +278,7 @@ export const EventsTable: React.FC<EventsTableProps> = (props) => {
                 columns={isMobile ? columns : desktopColumns}
                 initialState={{
                     pagination: { paginationModel: { page: 0, pageSize: 100 } },
-                    sorting: { sortModel: [{ field: "title", sort: "asc" }] },
+                    sorting: { sortModel: [{ field: isMobile ? "title" : "datetime", sort: "asc" }] },
                 }}
                 pageSizeOptions={[10, 20, 50]}
                 sx={{ border: 0 }}
