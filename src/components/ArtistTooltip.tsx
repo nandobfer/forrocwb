@@ -27,14 +27,14 @@ export const ArtistTooltip: React.FC<ArtistTooltipProps> = ({ artist }) => {
                 size="small"
                 color="primary"
                 onClick={() => (artist.instagram ? window.open(artist.instagram, "_new") : undefined)}
-                sx={{ borderBottom: "1px solid", borderRadius: 0}}
+                sx={{ borderBottom: "1px solid", borderRadius: 0 }}
                 fullWidth
             >
                 {ig_user ? `@${ig_user}` : artist.instagram}
             </Button>
-            <IconButton sx={{ position: "absolute", right: 0, bgcolor: "primary.main" }} color="default" size="small">
+            {/* <IconButton sx={{ position: "absolute", right: 0, bgcolor: "primary.main" }} color="default" size="small">
                 <Close fontSize="small" />
-            </IconButton>
+            </IconButton> */}
         </Box>
     )
 }

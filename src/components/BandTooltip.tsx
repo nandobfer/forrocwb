@@ -27,14 +27,14 @@ export const BandTooltip: React.FC<BandTooltipProps> = ({ band }) => {
                 size="small"
                 color="primary"
                 onClick={() => (band.instagram ? window.open(band.instagram, "_new") : undefined)}
-                sx={{ borderBottom: "1px solid", borderRadius: 0}}
+                sx={{ borderBottom: "1px solid", borderRadius: 0 }}
                 fullWidth
             >
                 {ig_user ? `@${ig_user}` : band.instagram}
             </Button>
-            <IconButton sx={{ position: "absolute", right: 0, bgcolor: "primary.main" }} color="default" size="small">
+            {/* <IconButton sx={{ position: "absolute", right: 0, bgcolor: "primary.main" }} color="default" size="small">
                 <Close fontSize="small" />
-            </IconButton>
+            </IconButton> */}
         </Box>
     )
 }
