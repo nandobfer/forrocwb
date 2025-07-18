@@ -44,7 +44,7 @@ export const BandsTable: React.FC<BandsTableProps> = (props) => {
     }, [formContext.band])
 
     return (
-        <Box sx={{ flexDirection: "column", height: data.length * 470 }}>
+        <Box sx={{ flexDirection: "column" }}>
             <DataGrid
                 loading={isFetching || loading}
                 rows={data}

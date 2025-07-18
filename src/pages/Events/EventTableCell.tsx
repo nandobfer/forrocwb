@@ -79,7 +79,7 @@ export const EventTableCell: React.FC<EventTableCellProps> = (props) => {
                             placement="bottom-start"
                             slotProps={{ tooltip: { sx: { padding: 0, bgcolor: "transparent" } } }}
                         >
-                            <IconButton size="small" onMouseEnter={() => setShowLocation(true)}>
+                            <IconButton size="small" onClick={() => setShowLocation(true)}>
                                 <LocationPin />
                             </IconButton>
                         </Tooltip>

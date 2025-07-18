@@ -61,7 +61,7 @@ export const Events: React.FC<EventListProps> = (props) => {
             {isFetching ? (
                 <LinearProgress variant="indeterminate" />
             ) : data.length > 0 ? (
-                <Box sx={{ flex: 1, py: 2, mx: -2 }}>
+                <Box sx={{ flex: 1, py: 2, mx: -2, height: 1 }}>
                     <Swiper
                         modules={[Navigation, Virtual]}
                         spaceBetween={16}

@@ -65,7 +65,7 @@ export const EventsTable: React.FC<EventsTableProps> = (props) => {
             sx={{
                 flexDirection: "column",
                 minHeight: 200,
-                height: data.length * 550 + 100,
+                // height: data.length * 550 + 100,
             }}
         >
             <DataGrid

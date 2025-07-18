@@ -9,6 +9,7 @@ import { WhoPlays } from "../../components/WhoPlays"
 
 interface EventContainerProps {
     event: Event
+    divider?: boolean
 }
 
 export const EventContainer: React.FC<EventContainerProps> = (props) => {
@@ -53,40 +54,40 @@ export const EventContainer: React.FC<EventContainerProps> = (props) => {
 
             {(event.bands.length > 0 || event.artists.length > 0) && <WhoPlays artists={event.artists} bands={event.bands} />}
 
-            <Box sx={{ justifyContent: "space-between", alignItems: "center" }}>
-                <ClickAwayListener onClickAway={() => setShowLocation(false)}>
-                    <Tooltip
-                        title={<EventLocation location={event.location} />}
-                        open={showLocation}
-                        placement="auto-end"
-                        slotProps={{ tooltip: { sx: { padding: 0, bgcolor: "transparent" } } }}
-                        // arrow={false}
-                    >
-                        <Button
-                            size="small"
-                            onClick={() => setShowLocation(true)}
-                            sx={{ borderBottom: "1px solid", borderRadius: 0 }}
-                            endIcon={<LocationPin sx={{ rotate: "180deg", transform: "scale(1, -1)" }} />}
-                            color="info"
-                        >
-                            Como chegar
-                        </Button>
-                    </Tooltip>
-                </ClickAwayListener>
-
-                {event.ticketUrl && (
+            <ClickAwayListener onClickAway={() => setShowLocation(false)}>
+                <Tooltip
+                    title={<EventLocation location={event.location} />}
+                    open={showLocation}
+                    placement="auto-end"
+                    slotProps={{ tooltip: { sx: { padding: 0, bgcolor: "transparent" } } }}
+                    // arrow={false}
+                >
                     <Button
                         size="small"
-                        onClick={() => window.open(event.ticketUrl!, "_new")}
-                        sx={{ borderBottom: "1px solid", borderRadius: 0, marginLeft: "auto" }}
-                        endIcon={<Reply sx={{ rotate: "180deg", transform: "scale(1, -1)" }} />}
+                        onClick={() => setShowLocation(true)}
+                        sx={{ borderBottom: "1px solid", borderRadius: 0 }}
+                        // variant="contained"
+                        endIcon={<LocationPin sx={{ rotate: "180deg", transform: "scale(1, -1)" }} />}
+                        color="info"
                     >
-                        Adquirir ingresso
+                        Como chegar
                     </Button>
-                )}
-            </Box>
+                </Tooltip>
+            </ClickAwayListener>
 
-            <Divider sx={{ my: 2 }} />
+            {event.ticketUrl && (
+                <Button
+                    size="small"
+                    onClick={() => window.open(event.ticketUrl!, "_new")}
+                    sx={{ borderBottom: "1px solid", borderRadius: 0 }}
+                    // variant="contained"
+                    endIcon={<Reply sx={{ rotate: "180deg", transform: "scale(1, -1)" }} />}
+                >
+                    Adquirir ingresso
+                </Button>
+            )}
+
+            {props.divider && <Divider sx={{ my: 2 }} />}
 
             <Menu open={!!menuAnchor} anchorEl={menuAnchor} onClose={closeMenu}></Menu>
         </Box>
