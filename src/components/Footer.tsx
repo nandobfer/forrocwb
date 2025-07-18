@@ -17,6 +17,7 @@ export const Footer: React.FC<FooterProps> = ({}) => {
 
     return (
         <Paper
+            elevation={0}
             sx={{ flexDirection: "column", alignItems: "center", bgcolor: "primary.main", padding: 2, borderRadius: 0, color: "background.default" }}
         >
             <Typography variant={isMobile ? "caption" : undefined}>
