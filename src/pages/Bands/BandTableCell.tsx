@@ -1,11 +1,8 @@
 import React, { useState } from "react"
 import { Avatar, Box, Chip, IconButton, Menu, Typography } from "@mui/material"
 import type { Band } from "../../types/server/class/Band"
-import { Delete, Edit, Groups, Instagram, MoreVert, TextFormat, Visibility } from "@mui/icons-material"
+import { Delete, Edit, Groups, Instagram, MoreVert } from "@mui/icons-material"
 import { GridActionsCellItem } from "@mui/x-data-grid"
-import { useConfirmDialog } from "burgos-confirm"
-import { useUser } from "../../hooks/useUser"
-import { useFormModal } from "../../hooks/useFormModal"
 import { PendingInfoChip } from "../../components/PendingInfoChip"
 import { DescriptionText } from "../../components/DescriptionText"
 
@@ -14,14 +11,12 @@ interface BandTableCellProps {
     loading: boolean
     setLoading: React.Dispatch<React.SetStateAction<boolean>>
     refetch: () => void
+    onDeletePress: (band_id: string) => void
+    onEditPress: (band: Band) => void
 }
 
 const containerWidth = "87.5vw"
 export const BandTableCell: React.FC<BandTableCellProps> = (props) => {
-    const { adminApi } = useUser()
-    const { confirm } = useConfirmDialog()
-    const formContext = useFormModal()
-
     const [menuAnchor, setMenuAnchor] = useState<HTMLButtonElement | null>(null)
 
     const band = props.band
@@ -37,29 +32,9 @@ export const BandTableCell: React.FC<BandTableCellProps> = (props) => {
         setMenuAnchor(null)
     }
 
-    const onDeletePress = async (band_id: string) => {
+    const onActionClick = (callback: () => void) => {
+        callback()
         closeMenu()
-        confirm({
-            title: "Tem certeza?",
-            content: "Essa ação é irreversível",
-            onConfirm: async () => {
-                props.setLoading(true)
-                try {
-                    const response = await adminApi.delete("/band", { params: { band_id } })
-                    props.refetch()
-                } catch (error) {
-                    console.log(error)
-                } finally {
-                    props.setLoading(false)
-                }
-            },
-        })
-    }
-
-    const onEditPress = (band: Band) => {
-        closeMenu()
-        formContext.setBand(band)
-        formContext.open("band")
     }
 
     return (
@@ -72,7 +47,11 @@ export const BandTableCell: React.FC<BandTableCellProps> = (props) => {
                     <MoreVert />
                 </IconButton>
             </Box>
-            <Avatar src={band.image || undefined} sx={{ width: 1, height: 150 }} variant="rounded">
+            <Avatar
+                src={band.image || undefined}
+                sx={{ width: 1, height: 150, bgcolor: "background.default", color: "primary.main" }}
+                variant="rounded"
+            >
                 <Groups sx={{ width: 1, height: 1 }} />
             </Avatar>
             <Box sx={{ flexDirection: "column" }}>
@@ -96,8 +75,8 @@ export const BandTableCell: React.FC<BandTableCellProps> = (props) => {
 
             <Menu open={!!menuAnchor} anchorEl={menuAnchor} onClose={closeMenu}>
                 {/* <GridActionsCellItem label="Visualizar" showInMenu disabled icon={<Visibility />} /> */}
-                <GridActionsCellItem label="Editar" showInMenu icon={<Edit />} onClick={() => onEditPress(band)} />
-                <GridActionsCellItem label="Deletar" showInMenu icon={<Delete />} onClick={() => onDeletePress(band.id)} />
+                <GridActionsCellItem label="Editar" showInMenu icon={<Edit />} onClick={() => onActionClick(() => props.onEditPress(band))} />
+                <GridActionsCellItem label="Deletar" showInMenu icon={<Delete />} onClick={() => onActionClick(() => props.onDeletePress(band.id))} />
             </Menu>
         </Box>
     )

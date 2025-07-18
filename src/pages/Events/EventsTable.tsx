@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from "react"
-import { Box, LinearProgress } from "@mui/material"
+import { Avatar, Box, Button, Chip, LinearProgress, Typography, useMediaQuery } from "@mui/material"
 import { useFormModal } from "../../hooks/useFormModal"
 import { useQuery } from "@tanstack/react-query"
 import { api } from "../../backend/api"
-import { DataGrid, type GridColDef } from "@mui/x-data-grid"
+import { DataGrid, GridActionsCellItem, type GridColDef } from "@mui/x-data-grid"
 import type { Event } from "../../types/server/class/Event"
 import { Toolbar } from "@mui/x-data-grid"
 import { DataGridToolbar, toolbar_style } from "../../components/DataGridToolbar"
@@ -11,11 +11,20 @@ import { EventTableCell } from "./EventTableCell"
 import { formatDate } from "../../tools/formatDate"
 import { getWeekNumber } from "../../tools/getWeekNumber"
 import { WeekNavigation } from "./WeekNavigation"
+import { BrokenImage, Delete, Edit, Groups, Link, Person, Reply } from "@mui/icons-material"
+import { DescriptionText } from "../../components/DescriptionText"
+import { PendingInfoChip } from "../../components/PendingInfoChip"
+import { currencyMask } from "../../tools/numberMask"
+import { useConfirmDialog } from "burgos-confirm"
+import { useUser } from "../../hooks/useUser"
 
 interface EventsTableProps {}
 
 export const EventsTable: React.FC<EventsTableProps> = (props) => {
     const formContext = useFormModal()
+    const { confirm } = useConfirmDialog()
+    const { adminApi } = useUser()
+    const isMobile = useMediaQuery("(orientation: portrait)")
 
     const [week, setWeek] = useState(getWeekNumber(new Date().getTime()))
     const [loading, setLoading] = useState(false)
@@ -26,6 +35,29 @@ export const EventsTable: React.FC<EventsTableProps> = (props) => {
         queryFn: async () => (await api.get("/event", { params: { week } })).data,
     })
 
+    const onDeletePress = async (event_id: string) => {
+        confirm({
+            title: "Tem certeza?",
+            content: "Essa ação é irreversível",
+            onConfirm: async () => {
+                setLoading(true)
+                try {
+                    const response = await adminApi.delete("/event", { params: { event_id } })
+                    refetch()
+                } catch (error) {
+                    console.log(error)
+                } finally {
+                    setLoading(false)
+                }
+            },
+        })
+    }
+
+    const onEditPress = (event: Event) => {
+        formContext.setEvent(event)
+        formContext.open("event")
+    }
+
     const columns: (GridColDef & { field: keyof Event | "actions" })[] = [
         {
             field: "title",
@@ -33,7 +65,16 @@ export const EventsTable: React.FC<EventsTableProps> = (props) => {
             flex: 1,
             display: "flex",
             renderCell(params) {
-                return <EventTableCell event={params.row} loading={loading} refetch={refetch} setLoading={setLoading} />
+                return (
+                    <EventTableCell
+                        event={params.row}
+                        loading={loading}
+                        refetch={refetch}
+                        setLoading={setLoading}
+                        onDeletePress={onDeletePress}
+                        onEditPress={onEditPress}
+                    />
+                )
             },
             valueFormatter: (_, row: Event) =>
                 row.title +
@@ -49,6 +90,130 @@ export const EventsTable: React.FC<EventsTableProps> = (props) => {
                 (row.price || "gratis") +
                 "\n" +
                 row.ticketUrl,
+        },
+    ]
+
+    const desktopColumns: (GridColDef & { field: keyof Event | "actions" })[] = [
+        {
+            field: "image",
+            width: 300,
+            align: "center",
+            headerName: "Foto",
+
+            renderCell(params) {
+                return (
+                    <Avatar
+                        src={params.value || undefined}
+                        sx={{ width: 1, height: 150, bgcolor: "background.default", color: "primary.main" }}
+                        variant="rounded"
+                    >
+                        <BrokenImage sx={{ width: 1, height: 1 }} />
+                    </Avatar>
+                )
+            },
+            display: "flex",
+        },
+        {
+            field: "title",
+            headerName: "Título",
+            flex: 0.2,
+            display: "flex",
+            renderCell(params) {
+                return (
+                    <Typography variant="subtitle2" sx={{ fontWeight: "bold", textWrap: "wrap" }}>
+                        {params.value}
+                    </Typography>
+                )
+            },
+        },
+        {
+            field: "description",
+            headerName: "Descrição",
+            flex: 0.4,
+            display: "flex",
+            renderCell(params) {
+                return <DescriptionText text={params.value} />
+            },
+        },
+        {
+            field: "price",
+            headerName: "Preço",
+            flex: 0.1,
+            display: "flex",
+            renderCell(params) {
+                return (
+                    <Typography variant="body1" color="success" sx={{ fontWeight: "bold" }}>
+                        {params.value ? currencyMask(params.value) : "GRÁTIS"}
+                    </Typography>
+                )
+            },
+        },
+        {
+            field: "ticketUrl",
+            headerName: "Ingresso",
+            flex: 0.15,
+            display: "flex",
+            renderCell(params) {
+                return params.value ? (
+                    <Button
+                        size="small"
+                        onClick={() => window.open(params.value!, "_new")}
+                        sx={{ borderBottom: "1px solid", borderRadius: 0 }}
+                        endIcon={<Reply sx={{ rotate: "180deg", transform: "scale(1, -1)" }} />}
+                    >
+                        Ingresso
+                    </Button>
+                ) : (
+                    <PendingInfoChip text="ingresso" icon={Link} />
+                )
+            },
+        },
+        {
+            field: "bands",
+            headerName: "Bandas",
+            display: "flex",
+            flex: 0.3,
+            renderCell(params) {
+                const event = params.row as Event
+                return (
+                    <Box sx={{ gap: 1, flexWrap: "wrap", maxWidth: 1 }}>
+                        {event.bands.length === 0 ? <PendingInfoChip text="nenhuma banda" icon={Groups} /> : <Groups />}
+                        {event.bands.map((band) => (
+                            <Chip size="small" label={band.name} key={band.id} color="primary" />
+                        ))}
+                    </Box>
+                )
+            },
+        },
+        {
+            field: "artists",
+            headerName: "Artistas",
+            display: "flex",
+            flex: 0.3,
+            renderCell(params) {
+                const event = params.row as Event
+                return (
+                    <Box sx={{ gap: 1, flexWrap: "wrap", maxWidth: 1 }}>
+                        {event.artists.length === 0 ? <PendingInfoChip text="nenhum artista" icon={Person} /> : <Person />}
+                        {event.artists.map((artist) => (
+                            <Chip size="small" label={artist.name} key={artist.id} color="primary" />
+                        ))}
+                    </Box>
+                )
+            },
+        },
+        {
+            field: "actions",
+            type: "actions",
+            flex: 0.1,
+            headerName: "Ações",
+            getActions(params) {
+                return [
+                    // <GridActionsCellItem label="Visualizar" showInMenu onClick={() => onDeletePress(params.row.id)} disabled icon={<Visibility />} />,
+                    <GridActionsCellItem label="Editar" showInMenu onClick={() => onEditPress(params.row)} icon={<Edit />} />,
+                    <GridActionsCellItem label="Deletar" showInMenu onClick={() => onDeletePress(params.row.id)} icon={<Delete />} />,
+                ]
+            },
         },
     ]
 
@@ -71,14 +236,14 @@ export const EventsTable: React.FC<EventsTableProps> = (props) => {
             <DataGrid
                 loading={isFetching || loading}
                 rows={data}
-                columns={columns}
+                columns={isMobile ? columns : desktopColumns}
                 initialState={{
                     pagination: { paginationModel: { page: 0, pageSize: 100 } },
                     sorting: { sortModel: [{ field: "title", sort: "asc" }] },
                 }}
                 pageSizeOptions={[10, 20, 50]}
                 sx={{ border: 0 }}
-                rowHeight={550}
+                rowHeight={isMobile ? 550 : 250}
                 showToolbar
                 hideFooterPagination
                 rowSelection={false}
@@ -94,14 +259,17 @@ export const EventsTable: React.FC<EventsTableProps> = (props) => {
                                 loading={isFetching || loading}
                                 title="Eventos"
                                 add={() => formContext.open("event")}
+                                left={isMobile ? undefined : <WeekNavigation selectedWeek={week} setSelectedWeek={setWeek} />}
                             />
                         </Toolbar>
                     ),
-                    columnHeaders: () => (
-                        <Box sx={{ flexDirection: "column", marginBottom: -2 }}>
-                            <WeekNavigation selectedWeek={week} setSelectedWeek={setWeek} />
-                        </Box>
-                    ),
+                    columnHeaders: isMobile
+                        ? () => (
+                              <Box sx={{ flexDirection: "column", marginBottom: -2 }}>
+                                  <WeekNavigation selectedWeek={week} setSelectedWeek={setWeek} />
+                              </Box>
+                          )
+                        : undefined,
                 }}
             />
         </Box>

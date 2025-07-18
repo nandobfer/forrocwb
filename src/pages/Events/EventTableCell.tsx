@@ -1,12 +1,8 @@
 import React, { useState } from "react"
 import { Avatar, Box, Button, Chip, ClickAwayListener, IconButton, Menu, Tooltip, Typography } from "@mui/material"
 import type { Event } from "../../types/server/class/Event"
-import { useUser } from "../../hooks/useUser"
-import { useConfirmDialog } from "burgos-confirm"
-import { useFormModal } from "../../hooks/useFormModal"
-import { AddPhotoAlternate, BrokenImage, Delete, Edit, Groups, Link, LocationPin, MoreVert, Person, Reply, Visibility } from "@mui/icons-material"
+import {  BrokenImage, Delete, Edit, Groups, Link, LocationPin, MoreVert, Person, Reply } from "@mui/icons-material"
 import { GridActionsCellItem } from "@mui/x-data-grid"
-import dayjs from "dayjs"
 import { DescriptionText } from "../../components/DescriptionText"
 import { currencyMask } from "../../tools/numberMask"
 import { PendingInfoChip } from "../../components/PendingInfoChip"
@@ -18,12 +14,11 @@ interface EventTableCellProps {
     loading: boolean
     setLoading: React.Dispatch<React.SetStateAction<boolean>>
     refetch: () => void
+    onDeletePress: (event_id: string) => void
+    onEditPress: (event: Event) => void
 }
 
 export const EventTableCell: React.FC<EventTableCellProps> = (props) => {
-    const { adminApi } = useUser()
-    const { confirm } = useConfirmDialog()
-    const formContext = useFormModal()
 
     const [menuAnchor, setMenuAnchor] = useState<HTMLButtonElement | null>(null)
     const [showLocation, setShowLocation] = useState(false)
@@ -34,29 +29,9 @@ export const EventTableCell: React.FC<EventTableCellProps> = (props) => {
         setMenuAnchor(null)
     }
 
-    const onDeletePress = async (event_id: string) => {
+    const onActionClick = (callback: () => void) => {
+        callback()
         closeMenu()
-        confirm({
-            title: "Tem certeza?",
-            content: "Essa ação é irreversível",
-            onConfirm: async () => {
-                props.setLoading(true)
-                try {
-                    const response = await adminApi.delete("/event", { params: { event_id } })
-                    props.refetch()
-                } catch (error) {
-                    console.log(error)
-                } finally {
-                    props.setLoading(false)
-                }
-            },
-        })
-    }
-
-    const onEditPress = (event: Event) => {
-        closeMenu()
-        formContext.setEvent(event)
-        formContext.open("event")
     }
 
     return (
@@ -92,7 +67,7 @@ export const EventTableCell: React.FC<EventTableCellProps> = (props) => {
 
             <Avatar
                 src={event.image || undefined}
-                sx={{ width: 1, height: 150, bgcolor: "background.paper", color: "primary.main" }}
+                sx={{ width: 1, height: 150, bgcolor: "background.default", color: "primary.main" }}
                 variant="rounded"
             >
                 <BrokenImage sx={{ width: 1, height: 1 }} />
@@ -133,8 +108,13 @@ export const EventTableCell: React.FC<EventTableCellProps> = (props) => {
 
             <Menu open={!!menuAnchor} anchorEl={menuAnchor} onClose={closeMenu}>
                 {/* <GridActionsCellItem label="Visualizar" showInMenu disabled icon={<Visibility />} /> */}
-                <GridActionsCellItem label="Editar" showInMenu icon={<Edit />} onClick={() => onEditPress(event)} />
-                <GridActionsCellItem label="Deletar" showInMenu icon={<Delete />} onClick={() => onDeletePress(event.id)} />
+                <GridActionsCellItem label="Editar" showInMenu icon={<Edit />} onClick={() => onActionClick(() => props.onEditPress(event))} />
+                <GridActionsCellItem
+                    label="Deletar"
+                    showInMenu
+                    icon={<Delete />}
+                    onClick={() => onActionClick(() => props.onDeletePress(event.id))}
+                />
             </Menu>
         </Box>
     )

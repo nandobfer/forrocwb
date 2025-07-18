@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react"
-import { Box, LinearProgress, Paper, Typography } from "@mui/material"
+import { Box, LinearProgress, Paper, Typography, useMediaQuery } from "@mui/material"
 import { useQuery } from "@tanstack/react-query"
 import { api } from "../../backend/api"
 import { DataGrid, Toolbar, type GridColDef } from "@mui/x-data-grid"
@@ -13,10 +13,12 @@ import { Delete, Edit, Instagram, TextFormat, Visibility } from "@mui/icons-mate
 import { PendingInfoChip } from "../../components/PendingInfoChip"
 import { DescriptionText } from "../../components/DescriptionText"
 import type { Artist } from "../../types/server/class/Artist"
+import { InstagramRender } from "../../components/InstagramRender"
 
 interface ArtistsTableProps {}
 
 export const ArtistsTable: React.FC<ArtistsTableProps> = (props) => {
+    const isMobile = useMediaQuery("(orientation: portrait)")
     const formContext = useFormModal()
     const { adminApi } = useUser()
     const { confirm } = useConfirmDialog()
@@ -29,65 +31,78 @@ export const ArtistsTable: React.FC<ArtistsTableProps> = (props) => {
         queryFn: async () => (await api.get("/artist")).data,
     })
 
-    const columns: (GridColDef & { field: keyof Artist | "actions" })[] = [
-        {
-            field: "image",
-            width: 80,
-            align: "center",
-            headerName: "Foto",
-
-            renderCell(params) {
-                return <CellAvatar source={params.value} />
-            },
-            display: "flex",
+    const actionColumn: GridColDef & { field: "actions" } = {
+        field: "actions",
+        type: "actions",
+        flex: 0.1,
+        headerName: "Ações",
+        getActions(params) {
+            return [
+                // <GridActionsCellItem label="Visualizar" showInMenu onClick={() => onDeletePress(params.row.id)} disabled icon={<Visibility />} />,
+                <GridActionsCellItem label="Editar" showInMenu onClick={() => onEditPress(params.row)} icon={<Edit />} />,
+                <GridActionsCellItem label="Deletar" showInMenu onClick={() => onDeletePress(params.row.id)} icon={<Delete />} />,
+            ]
         },
-        {
-            field: "name",
-            headerName: "Nome",
-            flex: 1,
-            display: "flex",
-            valueFormatter: (_, row: Artist) => row.name + "\n" + row.description + "\n" + row.instagram,
-            renderCell(params) {
-                const artist = params.row as Artist
-                const ig_base_url = "https://instagram.com/"
-                const splitted_ig = artist.instagram?.split(ig_base_url)
-                let ig_user = ""
+    }
 
-                if (splitted_ig && splitted_ig.length === 2) {
-                    ig_user = splitted_ig[1]
-                }
+    const imageColumn: GridColDef & { field: keyof Artist } = {
+        field: "image",
+        width: 80,
+        align: "center",
+        headerName: "Foto",
 
-                return (
-                    <Box sx={{ flexDirection: "column", gap: 0 }}>
-                        <Typography variant="subtitle2">{artist.name}</Typography>
-                        <DescriptionText text={artist.description} />
-                        <Typography
-                            variant="subtitle2"
-                            color={ig_user ? "primary" : undefined}
-                            sx={{ textDecoration: "underline", width: "min-content" }}
-                            className="link"
-                            onClick={() => (artist.instagram ? window.open(artist.instagram, "_new") : undefined)}
-                        >
-                            {ig_user ? `@${ig_user}` : artist.instagram || <PendingInfoChip text="instagram pendente" icon={Instagram} />}
-                        </Typography>
-                    </Box>
-                )
-            },
+        renderCell(params) {
+            return <CellAvatar source={params.value} />
         },
-        {
-            field: "actions",
-            type: "actions",
-            flex: 0.1,
-            headerName: "Ações",
-            getActions(params) {
-                return [
-                    // <GridActionsCellItem label="Visualizar" showInMenu onClick={() => onDeletePress(params.row.id)} disabled icon={<Visibility />} />,
-                    <GridActionsCellItem label="Editar" showInMenu onClick={() => onEditPress(params.row)} icon={<Edit />} />,
-                    <GridActionsCellItem label="Deletar" showInMenu onClick={() => onDeletePress(params.row.id)} icon={<Delete />} />,
-                ]
-            },
-        },
-    ]
+        display: "flex",
+    }
+
+    const columns: (GridColDef & { field: keyof Artist | "actions" })[] = isMobile
+        ? [
+              imageColumn,
+              {
+                  field: "name",
+                  headerName: "Nome",
+                  flex: 1,
+                  display: "flex",
+                  valueFormatter: (_, row: Artist) => row.name + "\n" + row.description + "\n" + row.instagram,
+                  renderCell(params) {
+                      const artist = params.row as Artist
+
+                      return (
+                          <Box sx={{ flexDirection: "column", gap: 0 }}>
+                              <Typography variant="subtitle2">{artist.name}</Typography>
+                              <DescriptionText text={artist.description} />
+                              <InstagramRender instagram_url={artist.instagram} />
+                          </Box>
+                      )
+                  },
+              },
+              actionColumn,
+          ]
+        : [
+              imageColumn,
+              { field: "name", headerName: "Nome", flex: 0.2 },
+              {
+                  field: "description",
+                  headerName: "Descrição",
+                  flex: 0.5,
+                  display: "flex",
+                  renderCell(params) {
+                      return <DescriptionText text={params.value} />
+                  },
+              },
+              {
+                  field: "instagram",
+                  headerName: "Instagram",
+                  flex: 0.2,
+                  display: "flex",
+                  renderCell(params) {
+                      return <InstagramRender instagram_url={params.value} />
+                  },
+              },
+              actionColumn,
+          ]
 
     const onDeletePress = async (artist_id: string) => {
         confirm({
@@ -132,7 +147,7 @@ export const ArtistsTable: React.FC<ArtistsTableProps> = (props) => {
                 }}
                 pageSizeOptions={[10, 20, 50]}
                 sx={{ border: 0 }}
-                rowHeight={200}
+                rowHeight={isMobile ? 200 : 150}
                 showToolbar
                 hideFooterPagination
                 // autoPageSize
