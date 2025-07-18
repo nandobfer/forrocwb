@@ -1,16 +1,10 @@
 import React, { useState } from "react"
-import { Avatar, Box, Button, Chip, ClickAwayListener, IconButton, Menu, Tooltip, Typography } from "@mui/material"
+import { Avatar, Box, Button, ClickAwayListener, Divider, Menu, Tooltip, Typography } from "@mui/material"
 import type { Event } from "../../types/server/class/Event"
-import { AddPhotoAlternate, BrokenImage, Delete, Edit, Groups, Link, LocationPin, MoreVert, Person, Reply, Visibility } from "@mui/icons-material"
-import { GridActionsCellItem } from "@mui/x-data-grid"
+import { BrokenImage, LocationPin, Reply } from "@mui/icons-material"
 import dayjs from "dayjs"
-import { DescriptionText } from "../../components/DescriptionText"
 import { currencyMask } from "../../tools/numberMask"
-import { PendingInfoChip } from "../../components/PendingInfoChip"
-import { formatDate } from "../../tools/formatDate"
 import { EventLocation } from "../../components/EventLocation"
-import { MiniBand } from "../../components/MiniBand"
-import { MiniArtist } from "../../components/MiniArtist"
 import { WhoPlays } from "../../components/WhoPlays"
 
 interface EventContainerProps {
@@ -43,21 +37,6 @@ export const EventContainer: React.FC<EventContainerProps> = (props) => {
                         </Typography>
                     </Box>
                 </Box>
-
-                {/* <Box sx={{ marginBottom: 1, marginTop: 1, marginRight: -0.5 }}>
-                    <ClickAwayListener onClickAway={() => setShowLocation(false)}>
-                        <Tooltip
-                            title={<EventLocation location={event.location} />}
-                            open={showLocation}
-                            placement="bottom-start"
-                            slotProps={{ tooltip: { sx: { padding: 0, bgcolor: "transparent" } } }}
-                        >
-                            <IconButton size="small" onMouseEnter={() => setShowLocation(true)}>
-                                <LocationPin />
-                            </IconButton>
-                        </Tooltip>
-                    </ClickAwayListener>
-                </Box> */}
             </Box>
 
             {event.image && (
@@ -106,6 +85,8 @@ export const EventContainer: React.FC<EventContainerProps> = (props) => {
                     </Button>
                 )}
             </Box>
+
+            <Divider sx={{ my: 2 }} />
 
             <Menu open={!!menuAnchor} anchorEl={menuAnchor} onClose={closeMenu}></Menu>
         </Box>
