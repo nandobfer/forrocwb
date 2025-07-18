@@ -246,20 +246,20 @@ export const EventFormModal: React.FC<EventFormModalProps> = (props) => {
 
                             <Box sx={{ gap: 2 }}>
                                 <TextField
-                                    label="Bairro"
-                                    value={formik.values.location.district}
-                                    name="location.district"
-                                    onChange={formik.handleChange}
-                                    size="small"
-                                    sx={{ flex: 0.7 }}
-                                />
-                                <TextField
                                     label="Número"
                                     value={formik.values.location.number}
                                     name="location.number"
                                     onChange={formik.handleChange}
                                     size="small"
                                     sx={{ flex: 0.3 }}
+                                />
+                                <TextField
+                                    label="Bairro"
+                                    value={formik.values.location.district}
+                                    name="location.district"
+                                    onChange={formik.handleChange}
+                                    size="small"
+                                    sx={{ flex: 0.7 }}
                                 />
                             </Box>
                             <TextField

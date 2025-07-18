@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react"
-import { Avatar, Box, Button, Chip, LinearProgress, Typography, useMediaQuery } from "@mui/material"
+import { Avatar, Badge, Box, Button, Chip, LinearProgress, Typography, useMediaQuery } from "@mui/material"
 import { useFormModal } from "../../hooks/useFormModal"
 import { useQuery } from "@tanstack/react-query"
 import { api } from "../../backend/api"
@@ -11,12 +11,13 @@ import { EventTableCell } from "./EventTableCell"
 import { formatDate } from "../../tools/formatDate"
 import { getWeekNumber } from "../../tools/getWeekNumber"
 import { WeekNavigation } from "./WeekNavigation"
-import { BrokenImage, Delete, Edit, Groups, Link, Person, Reply } from "@mui/icons-material"
+import { BrokenImage, Delete, Edit, Groups, Link, LocationPin, Person, Reply } from "@mui/icons-material"
 import { DescriptionText } from "../../components/DescriptionText"
 import { PendingInfoChip } from "../../components/PendingInfoChip"
 import { currencyMask } from "../../tools/numberMask"
 import { useConfirmDialog } from "burgos-confirm"
 import { useUser } from "../../hooks/useUser"
+import { formatAddress } from "../../tools/formatAddress"
 
 interface EventsTableProps {}
 
@@ -96,7 +97,7 @@ export const EventsTable: React.FC<EventsTableProps> = (props) => {
     const desktopColumns: (GridColDef & { field: keyof Event | "actions" })[] = [
         {
             field: "image",
-            width: 300,
+            width: 150,
             align: "center",
             headerName: "Foto",
 
@@ -104,7 +105,7 @@ export const EventsTable: React.FC<EventsTableProps> = (props) => {
                 return (
                     <Avatar
                         src={params.value || undefined}
-                        sx={{ width: 1, height: 150, bgcolor: "background.default", color: "primary.main" }}
+                        sx={{ width: 1, height: 75, bgcolor: "background.default", color: "primary.main" }}
                         variant="rounded"
                     >
                         <BrokenImage sx={{ width: 1, height: 1 }} />
@@ -112,6 +113,20 @@ export const EventsTable: React.FC<EventsTableProps> = (props) => {
                 )
             },
             display: "flex",
+        },
+        {
+            field: "datetime",
+            headerName: "Data e Hora",
+            valueFormatter: (value) => formatDate(value),
+            flex: 0.13,
+            display: "flex",
+            renderCell(params) {
+                return (
+                    <Typography variant="subtitle2" sx={{ textWrap: "wrap" }}>
+                        {formatDate(params.value).replace("-", "")}
+                    </Typography>
+                )
+            },
         },
         {
             field: "title",
@@ -136,35 +151,47 @@ export const EventsTable: React.FC<EventsTableProps> = (props) => {
             },
         },
         {
-            field: "price",
-            headerName: "Preço",
-            flex: 0.13,
+            field: "location",
+            headerName: "Local",
+            flex: 0.3,
             display: "flex",
             renderCell(params) {
-                return (
-                    <Typography variant="body1" color="success" sx={{ fontWeight: "bold" }}>
-                        {params.value ? currencyMask(params.value) : "GRÁTIS"}
+                const event = params.row as Event
+                return event.location.street ? (
+                    <Typography variant="caption" sx={{ textWrap: "wrap" }}>
+                        {formatAddress(event.location)}
                     </Typography>
+                ) : (
+                    <PendingInfoChip icon={LocationPin} text="Local não cadastrado" />
                 )
             },
         },
         {
             field: "ticketUrl",
-            headerName: "Ingresso",
+            headerName: "Preço e ingresso",
             flex: 0.15,
             display: "flex",
             renderCell(params) {
-                return params.value ? (
-                    <Button
-                        size="small"
-                        onClick={() => window.open(params.value!, "_new")}
-                        sx={{ borderBottom: "1px solid", borderRadius: 0 }}
-                        endIcon={<Reply sx={{ rotate: "180deg", transform: "scale(1, -1)" }} />}
-                    >
-                        Ingresso
-                    </Button>
-                ) : (
-                    <PendingInfoChip text="ingresso" icon={Link} />
+                const event = params.row as Event
+
+                return (
+                    <Box sx={{ flexDirection: "column", alignItems: "center" }}>
+                        <Typography variant="body1" color="success" sx={{ fontWeight: "bold" }}>
+                            {event.price ? currencyMask(event.price) : "GRÁTIS"}
+                        </Typography>
+                        {event.ticketUrl ? (
+                            <Button
+                                size="small"
+                                onClick={() => window.open(params.value!, "_new")}
+                                sx={{ borderBottom: "1px solid", borderRadius: 0 }}
+                                endIcon={<Reply sx={{ rotate: "180deg", transform: "scale(1, -1)" }} />}
+                            >
+                                Ingresso
+                            </Button>
+                        ) : (
+                            <PendingInfoChip text="ingresso" icon={Link} />
+                        )}
+                    </Box>
                 )
             },
         },
@@ -176,8 +203,14 @@ export const EventsTable: React.FC<EventsTableProps> = (props) => {
             renderCell(params) {
                 const event = params.row as Event
                 return (
-                    <Box sx={{ gap: 1, flexWrap: "wrap", maxWidth: 1 }}>
-                        {event.bands.length === 0 ? <PendingInfoChip text="nenhuma banda" icon={Groups} /> : <Groups />}
+                    <Box sx={{ gap: 1, flexWrap: "wrap", maxWidth: 1, overflowY: "auto", height: 1, alignItems: "center", alignContent: "center" }}>
+                        {event.bands.length === 0 ? (
+                            <PendingInfoChip text="nenhuma banda" icon={Groups} />
+                        ) : (
+                            <Badge badgeContent={event.bands.length} color="primary" sx={{ marginRight: 1 }}>
+                                <Groups />
+                            </Badge>
+                        )}
                         {event.bands.map((band) => (
                             <Chip size="small" label={band.name} key={band.id} color="primary" />
                         ))}
@@ -193,8 +226,14 @@ export const EventsTable: React.FC<EventsTableProps> = (props) => {
             renderCell(params) {
                 const event = params.row as Event
                 return (
-                    <Box sx={{ gap: 1, flexWrap: "wrap", maxWidth: 1 }}>
-                        {event.artists.length === 0 ? <PendingInfoChip text="nenhum artista" icon={Person} /> : <Person />}
+                    <Box sx={{ gap: 1, flexWrap: "wrap", maxWidth: 1, overflowY: "auto", height: 1, alignItems: "center", alignContent: "center" }}>
+                        {event.artists.length === 0 ? (
+                            <PendingInfoChip text="nenhum artista" icon={Person} />
+                        ) : (
+                            <Badge badgeContent={event.artists.length} color="primary" sx={{ marginRight: 1 }}>
+                                <Person />
+                            </Badge>
+                        )}
                         {event.artists.map((artist) => (
                             <Chip size="small" label={artist.name} key={artist.id} color="primary" />
                         ))}
@@ -243,7 +282,7 @@ export const EventsTable: React.FC<EventsTableProps> = (props) => {
                 }}
                 pageSizeOptions={[10, 20, 50]}
                 sx={{ border: 0 }}
-                rowHeight={isMobile ? 550 : 250}
+                rowHeight={isMobile ? 550 : 200}
                 showToolbar
                 hideFooterPagination
                 rowSelection={!isMobile}

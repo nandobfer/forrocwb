@@ -54,26 +54,28 @@ export const EventContainer: React.FC<EventContainerProps> = (props) => {
 
             {(event.bands.length > 0 || event.artists.length > 0) && <WhoPlays artists={event.artists} bands={event.bands} />}
 
-            <ClickAwayListener onClickAway={() => setShowLocation(false)}>
-                <Tooltip
-                    title={<EventLocation location={event.location} />}
-                    open={showLocation}
-                    placement="auto-end"
-                    slotProps={{ tooltip: { sx: { padding: 0, bgcolor: "transparent" } } }}
-                    // arrow={false}
-                >
-                    <Button
-                        size="small"
-                        onClick={() => setShowLocation(true)}
-                        sx={{ borderBottom: "1px solid", borderRadius: 0 }}
-                        // variant="contained"
-                        endIcon={<LocationPin sx={{ rotate: "180deg", transform: "scale(1, -1)" }} />}
-                        color="info"
+            {!!event.location.street && (
+                <ClickAwayListener onClickAway={() => setShowLocation(false)}>
+                    <Tooltip
+                        title={<EventLocation location={event.location} />}
+                        open={showLocation}
+                        placement="auto-end"
+                        slotProps={{ tooltip: { sx: { padding: 0, bgcolor: "transparent" } } }}
+                        // arrow={false}
                     >
-                        Como chegar
-                    </Button>
-                </Tooltip>
-            </ClickAwayListener>
+                        <Button
+                            size="small"
+                            onClick={() => setShowLocation(true)}
+                            sx={{ borderBottom: "1px solid", borderRadius: 0 }}
+                            // variant="contained"
+                            endIcon={<LocationPin sx={{ rotate: "180deg", transform: "scale(1, -1)" }} />}
+                            color="info"
+                        >
+                            Como chegar
+                        </Button>
+                    </Tooltip>
+                </ClickAwayListener>
+            )}
 
             {event.ticketUrl && (
                 <Button
