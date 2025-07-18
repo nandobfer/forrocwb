@@ -138,7 +138,7 @@ export const EventsTable: React.FC<EventsTableProps> = (props) => {
         {
             field: "price",
             headerName: "Preço",
-            flex: 0.1,
+            flex: 0.13,
             display: "flex",
             renderCell(params) {
                 return (
@@ -246,7 +246,7 @@ export const EventsTable: React.FC<EventsTableProps> = (props) => {
                 rowHeight={isMobile ? 550 : 250}
                 showToolbar
                 hideFooterPagination
-                rowSelection={false}
+                rowSelection={!isMobile}
                 // autoPageSize
                 density="compact"
                 slotProps={{ loadingOverlay: { sx: { height: 9999 } } }}
