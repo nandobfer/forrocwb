@@ -12,6 +12,7 @@ import { FormModalProvider } from "./contexts/FormModalContext"
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider"
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs"
 import "dayjs/locale/pt-br"
+import { Footer } from "./components/Footer"
 
 interface ProvidersProps {
     children?: React.ReactNode
@@ -30,7 +31,8 @@ export const Providers: React.FC<ProvidersProps> = (props) => {
                                 <UserProvider>
                                     <FormModalProvider>
                                         <Header />
-                                        <Box sx={{ flexDirection: "column", overflowY: "auto", padding: 2, height: 1 }}>{props.children}</Box>
+                                        <Box sx={{ flexDirection: "column", padding: 2, minHeight: "80vh" }}>{props.children}</Box>
+                                        <Footer />
                                         <Snackbar />
                                         <ConfirmDialog />
                                         <AdminDial />
