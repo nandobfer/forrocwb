@@ -67,7 +67,7 @@ export const Events: React.FC<EventListProps> = (props) => {
                         spaceBetween={16}
                         slidesPerView={isMobile ? 1.2 : 4.25}
                         centeredSlides
-                        cssMode
+                        cssMode={isMobile}
                         initialSlide={currentDayIndex}
                         onSwiper={setSwiper}
                         onSlideChange={(swiper) => setCurrentDayIndex(swiper.activeIndex)}
