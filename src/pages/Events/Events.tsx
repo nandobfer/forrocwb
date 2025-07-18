@@ -71,7 +71,7 @@ export const Events: React.FC<EventListProps> = (props) => {
                         initialSlide={currentDayIndex}
                         onSwiper={setSwiper}
                         onSlideChange={(swiper) => setCurrentDayIndex(swiper.activeIndex)}
-                        style={{ height: "100%", padding: "0 16px" }}
+                        style={{ height: "100%" }}
                     >
                         {weekEvents.map((day, index) => (
                             <SwiperSlide
