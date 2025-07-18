@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useState } from "react"
-import { Box, LinearProgress, Typography } from "@mui/material"
+import { Box, LinearProgress, Typography, useMediaQuery } from "@mui/material"
 import { useQuery } from "@tanstack/react-query"
 import { api } from "../../backend/api"
 import { getWeekNumber } from "../../tools/getWeekNumber"
@@ -15,6 +15,8 @@ import type { Event as EventType } from "../../types/server/class/Event"
 interface EventListProps {}
 
 export const Events: React.FC<EventListProps> = (props) => {
+    const isMobile = useMediaQuery("(orientation: portrait)")
+
     const [week, setWeek] = useState(getWeekNumber(new Date().getTime()))
     const [currentDayIndex, setCurrentDayIndex] = useState(new Date().getDay() - 1)
     const [swiper, setSwiper] = useState<SwiperType | null>(null)
@@ -63,7 +65,7 @@ export const Events: React.FC<EventListProps> = (props) => {
                     <Swiper
                         modules={[Navigation, Virtual]}
                         spaceBetween={16}
-                        slidesPerView={1.2}
+                        slidesPerView={isMobile ? 1.2 : 4.25}
                         centeredSlides
                         initialSlide={currentDayIndex}
                         onSwiper={setSwiper}
