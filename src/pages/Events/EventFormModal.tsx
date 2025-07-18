@@ -120,6 +120,13 @@ export const EventFormModal: React.FC<EventFormModalProps> = (props) => {
     })
 
     useEffect(() => {
+        if (context.event) {
+            console.log(context.event)
+            console.log(getWeekNumber(context.event.datetime))
+        }
+    }, [context.event])
+
+    useEffect(() => {
         return () => {
             formik.resetForm()
             fileDialog.reset()

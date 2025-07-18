@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react"
-import { Box, LinearProgress, Paper, Typography, useMediaQuery } from "@mui/material"
+import { Box, Chip, LinearProgress, Tooltip, Typography, useMediaQuery } from "@mui/material"
 import { useQuery } from "@tanstack/react-query"
 import { api } from "../../backend/api"
 import { DataGrid, Toolbar, type GridColDef } from "@mui/x-data-grid"
@@ -9,11 +9,11 @@ import { useFormModal } from "../../hooks/useFormModal"
 import { GridActionsCellItem } from "@mui/x-data-grid"
 import { useUser } from "../../hooks/useUser"
 import { useConfirmDialog } from "burgos-confirm"
-import { Delete, Edit, Instagram, TextFormat, Visibility } from "@mui/icons-material"
-import { PendingInfoChip } from "../../components/PendingInfoChip"
+import { Delete, Edit, Groups } from "@mui/icons-material"
 import { DescriptionText } from "../../components/DescriptionText"
 import type { Artist } from "../../types/server/class/Artist"
 import { InstagramRender } from "../../components/InstagramRender"
+import { ArtistEventsChats } from "./ArtistEventsCharts"
 
 interface ArtistsTableProps {}
 
@@ -61,7 +61,7 @@ export const ArtistsTable: React.FC<ArtistsTableProps> = (props) => {
         ? [
               imageColumn,
               {
-                  field: "name",
+                  field: "events",
                   headerName: "Nome",
                   flex: 1,
                   display: "flex",
@@ -70,10 +70,30 @@ export const ArtistsTable: React.FC<ArtistsTableProps> = (props) => {
                       const artist = params.row as Artist
 
                       return (
-                          <Box sx={{ flexDirection: "column", gap: 0 }}>
-                              <Typography variant="subtitle2">{artist.name}</Typography>
+                          <Box sx={{ flexDirection: "column", gap: 1, alignItems: "flex-start" }}>
+                              <Box sx={{ alignItems: "center", gap: 1 }}>
+                                  {artist.bands > 0 && (
+                                      <Tooltip
+                                          title={
+                                              <Typography>
+                                                  {" "}
+                                                  integrante de{" "}
+                                                  <Typography color="primary" component={"span"} sx={{ fontWeight: "bold" }}>
+                                                      {artist.bands}
+                                                  </Typography>{" "}
+                                                  banda
+                                                  {artist.bands > 1 ? "s" : ""}{" "}
+                                              </Typography>
+                                          }
+                                      >
+                                          <Chip icon={<Groups />} label={`${artist.bands}`} size="small" color="primary" />
+                                      </Tooltip>
+                                  )}
+                                  <Typography variant="subtitle2">{artist.name}</Typography>
+                              </Box>
                               <DescriptionText text={artist.description} />
                               <InstagramRender instagram_url={artist.instagram} />
+                              <ArtistEventsChats artist={artist} artists={data} />
                           </Box>
                       )
                   },
@@ -82,11 +102,11 @@ export const ArtistsTable: React.FC<ArtistsTableProps> = (props) => {
           ]
         : [
               imageColumn,
-              { field: "name", headerName: "Nome", flex: 0.2 },
+              { field: "name", headerName: "Nome", flex: 0.1 },
               {
                   field: "description",
                   headerName: "Descrição",
-                  flex: 0.5,
+                  flex: 0.25,
                   display: "flex",
                   renderCell(params) {
                       return <DescriptionText text={params.value} />
@@ -95,12 +115,33 @@ export const ArtistsTable: React.FC<ArtistsTableProps> = (props) => {
               {
                   field: "instagram",
                   headerName: "Instagram",
-                  flex: 0.2,
+                  flex: 0.15,
                   display: "flex",
                   renderCell(params) {
                       return <InstagramRender instagram_url={params.value} />
                   },
               },
+              {
+                  field: "bands",
+                  headerName: "Bandas",
+                  display: "flex",
+                  flex: 0.05,
+                  align: "center",
+                  headerAlign: "center",
+                  renderCell(params) {
+                      return <Chip label={params.value} color={params.value ? "primary" : undefined} />
+                  },
+              },
+              {
+                  field: "events",
+                  headerName: "Eventos",
+                  display: "flex",
+                  flex: 0.15,
+                  renderCell(params) {
+                      return <ArtistEventsChats artist={params.row} artists={data} />
+                  },
+              },
+
               actionColumn,
           ]
 
@@ -143,11 +184,11 @@ export const ArtistsTable: React.FC<ArtistsTableProps> = (props) => {
                 columns={columns}
                 initialState={{
                     pagination: { paginationModel: { page: 0, pageSize: 100 } },
-                    sorting: { sortModel: [{ field: "name", sort: "asc" }] },
+                    sorting: { sortModel: [{ field: "events", sort: "desc" }] },
                 }}
                 pageSizeOptions={[10, 20, 50]}
                 sx={{ border: 0 }}
-                rowHeight={isMobile ? 200 : 150}
+                rowHeight={isMobile ? 400 : 175}
                 showToolbar
                 hideFooterPagination
                 // autoPageSize

@@ -2,7 +2,26 @@ import { Prisma } from "@prisma/client";
 import { Band } from "./Band";
 import { Event } from "./Event";
 import { UploadedFile } from "express-fileupload";
-export type ArtistPrisma = Prisma.ArtistGetPayload<{}>;
+export declare const artist_include: {
+    _count: {
+        select: {
+            events: true;
+            bands: true;
+        };
+    };
+    bands: {
+        include: {
+            _count: {
+                select: {
+                    events: true;
+                };
+            };
+        };
+    };
+};
+export type ArtistPrisma = Prisma.ArtistGetPayload<{
+    include: typeof artist_include;
+}>;
 export interface ArtistForm {
     name: string;
     description?: string;
@@ -17,6 +36,10 @@ export declare class Artist {
     image: string | null;
     instagram: string | null;
     birthdate: string | null;
+    events: number;
+    bands: number;
+    eventsWithoutBand: number;
+    eventsAsBand: number;
     static new(data: ArtistForm): Promise<Artist>;
     static getAll(): Promise<Artist[]>;
     static findById(id: string): Promise<Artist | null>;

@@ -5,17 +5,18 @@ import { Delete, Edit, Groups, Instagram, MoreVert } from "@mui/icons-material"
 import { GridActionsCellItem } from "@mui/x-data-grid"
 import { PendingInfoChip } from "../../components/PendingInfoChip"
 import { DescriptionText } from "../../components/DescriptionText"
+import { NormalizedBarChart } from "../../components/NormalizedBarChart"
 
 interface BandTableCellProps {
     band: Band
     loading: boolean
+    higherEvents: number
     setLoading: React.Dispatch<React.SetStateAction<boolean>>
     refetch: () => void
     onDeletePress: (band_id: string) => void
     onEditPress: (band: Band) => void
 }
 
-const containerWidth = "87.5vw"
 export const BandTableCell: React.FC<BandTableCellProps> = (props) => {
     const [menuAnchor, setMenuAnchor] = useState<HTMLButtonElement | null>(null)
 
@@ -38,7 +39,7 @@ export const BandTableCell: React.FC<BandTableCellProps> = (props) => {
     }
 
     return (
-        <Box sx={{ flexDirection: "column", gap: 1, width: containerWidth }}>
+        <Box sx={{ flexDirection: "column", gap: 1, width: 1 }}>
             <Box sx={{ alignItems: "center", justifyContent: "space-between", marginBottom: -1 }}>
                 <Typography variant="subtitle2" sx={{ fontWeight: "bold" }}>
                     {band.name}
@@ -66,11 +67,18 @@ export const BandTableCell: React.FC<BandTableCellProps> = (props) => {
                     {ig_user ? `@${ig_user}` : band.instagram || <PendingInfoChip text="instagram pendente" icon={Instagram} />}
                 </Typography>
             </Box>
-            <Box sx={{ gap: 1, maxWidth: containerWidth, overflowX: "auto" }}>
+            <Box sx={{ gap: 1, overflowX: "auto", mx: -1, px: 1 }}>
                 {band.artists.map((artist) => (
                     <Chip size="small" label={artist.name} key={artist.id} color="primary" />
                 ))}
                 {band.artists.length === 0 && <PendingInfoChip text="nenhum integrante selecionado" icon={Groups} />}
+            </Box>
+
+            <Box sx={{ flexDirection: "column", marginTop: 0 }}>
+                <Typography variant="caption" sx={{ lineHeight: "0.5em" }}>
+                    Eventos
+                </Typography>
+                <NormalizedBarChart max={props.higherEvents} value={band.events} color="primary" />
             </Box>
 
             <Menu open={!!menuAnchor} anchorEl={menuAnchor} onClose={closeMenu}>

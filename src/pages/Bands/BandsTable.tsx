@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from "react"
-import { Avatar, Box, Chip, LinearProgress, useMediaQuery } from "@mui/material"
+import React, { useEffect, useMemo, useState } from "react"
+import { Avatar, Box, Chip, LinearProgress, Typography, useMediaQuery } from "@mui/material"
 import { useQuery } from "@tanstack/react-query"
 import { api } from "../../backend/api"
 import { DataGrid, GridActionsCellItem, Toolbar, type GridColDef } from "@mui/x-data-grid"
@@ -7,13 +7,13 @@ import { DataGridToolbar, toolbar_style } from "../../components/DataGridToolbar
 import { useFormModal } from "../../hooks/useFormModal"
 import type { Band } from "../../types/server/class/Band"
 import { BandTableCell } from "./BandTableCell"
-import { CellAvatar } from "../../components/CellAvatar"
 import { DescriptionText } from "../../components/DescriptionText"
 import { InstagramRender } from "../../components/InstagramRender"
 import { useConfirmDialog } from "burgos-confirm"
 import { useUser } from "../../hooks/useUser"
 import { Delete, Edit, Groups } from "@mui/icons-material"
 import { PendingInfoChip } from "../../components/PendingInfoChip"
+import { NormalizedBarChart } from "../../components/NormalizedBarChart"
 
 interface BandsTableProps {}
 
@@ -30,6 +30,8 @@ export const BandsTable: React.FC<BandsTableProps> = (props) => {
         queryKey: ["bandsData"],
         queryFn: async () => (await api.get("/band")).data,
     })
+
+    const higherEvents = useMemo(() => data.reduce((max, band) => (band.events > max ? band.events : max), 0), [data])
 
     const onDeletePress = async (band_id: string) => {
         confirm({
@@ -65,6 +67,7 @@ export const BandsTable: React.FC<BandsTableProps> = (props) => {
             renderCell(params) {
                 return (
                     <BandTableCell
+                        higherEvents={higherEvents}
                         band={params.row}
                         loading={loading}
                         refetch={refetch}
@@ -80,7 +83,7 @@ export const BandsTable: React.FC<BandsTableProps> = (props) => {
     const desktopColumns: (GridColDef & { field: keyof Band | "actions" })[] = [
         {
             field: "image",
-            width: 300,
+            width: 150,
             align: "center",
             headerName: "Foto",
 
@@ -88,7 +91,7 @@ export const BandsTable: React.FC<BandsTableProps> = (props) => {
                 return (
                     <Avatar
                         src={params.value || undefined}
-                        sx={{ width: 1, height: 150, bgcolor: "background.default", color: "primary.main" }}
+                        sx={{ width: 1, height: 75, bgcolor: "background.default", color: "primary.main" }}
                         variant="rounded"
                     >
                         <Groups sx={{ width: 1, height: 1 }} />
@@ -101,7 +104,7 @@ export const BandsTable: React.FC<BandsTableProps> = (props) => {
         {
             field: "description",
             headerName: "Descrição",
-            flex: 0.4,
+            flex: 0.3,
             display: "flex",
             renderCell(params) {
                 return <DescriptionText text={params.value} />
@@ -110,7 +113,7 @@ export const BandsTable: React.FC<BandsTableProps> = (props) => {
         {
             field: "instagram",
             headerName: "Instagram",
-            flex: 0.2,
+            flex: 0.15,
             display: "flex",
             renderCell(params) {
                 return <InstagramRender instagram_url={params.value} />
@@ -131,6 +134,15 @@ export const BandsTable: React.FC<BandsTableProps> = (props) => {
                         {band.artists.length === 0 && <PendingInfoChip text="nenhum integrante selecionado" icon={Groups} />}
                     </Box>
                 )
+            },
+        },
+        {
+            field: "events",
+            headerName: "Eventos",
+            display: "flex",
+            flex: 0.1,
+            renderCell(params) {
+                return <NormalizedBarChart max={higherEvents} value={params.value} color="primary" />
             },
         },
         {
@@ -164,11 +176,11 @@ export const BandsTable: React.FC<BandsTableProps> = (props) => {
                 columns={isMobile ? columns : desktopColumns}
                 initialState={{
                     pagination: { paginationModel: { page: 0, pageSize: 100 } },
-                    sorting: { sortModel: [{ field: "name", sort: "asc" }] },
+                    sorting: { sortModel: [{ field: isMobile ? "name" : "events", sort: "desc" }] },
                 }}
                 pageSizeOptions={[10, 20, 50]}
                 sx={{ border: 0 }}
-                rowHeight={isMobile ? 470 : 250}
+                rowHeight={isMobile ? 500 : 150}
                 showToolbar
                 hideFooterPagination
                 // autoPageSize

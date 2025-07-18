@@ -15,18 +15,20 @@ export interface WeekDay {
     events: Event[]
 }
 
+const borderRadius = 30
+
 export const EventDay: React.FC<EventDayProps> = ({ day, index }) => {
     const theme = useMuiTheme()
     const today = new Date().getDay()
     const isToday = index === 6 ? today === 0 : index === today - 1
     return (
-        <Paper sx={{ flexDirection: "column", borderTopRightRadius: 50, borderTopLeftRadius: 50, overflow: "hidden" }}>
+        <Paper sx={{ flexDirection: "column", borderTopRightRadius: borderRadius, borderTopLeftRadius: borderRadius, overflow: "hidden" }}>
             <Paper
                 sx={{
                     flexDirection: "column",
                     padding: 1,
-                    borderTopRightRadius: 50,
-                    borderTopLeftRadius: 50,
+                    borderTopRightRadius: borderRadius,
+                    borderTopLeftRadius: borderRadius,
                     bgcolor: isToday ? "primary.main" : theme.palette.divider,
                     cursor: "col-resize",
                 }}

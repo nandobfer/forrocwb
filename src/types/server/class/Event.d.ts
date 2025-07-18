@@ -6,10 +6,51 @@ import { WithoutFunctions } from "./helpers";
 export declare const event_include: {
     bands: {
         include: {
-            artists: true;
+            artists: {
+                include: {
+                    _count: {
+                        select: {
+                            events: true;
+                            bands: true;
+                        };
+                    };
+                    bands: {
+                        include: {
+                            _count: {
+                                select: {
+                                    events: true;
+                                };
+                            };
+                        };
+                    };
+                };
+            };
+            _count: {
+                select: {
+                    events: true;
+                };
+            };
         };
     };
-    artists: true;
+    artists: {
+        include: {
+            _count: {
+                select: {
+                    events: true;
+                    bands: true;
+                };
+            };
+            bands: {
+                include: {
+                    _count: {
+                        select: {
+                            events: true;
+                        };
+                    };
+                };
+            };
+        };
+    };
 };
 export type EventPrisma = Prisma.EventGetPayload<{
     include: typeof event_include;
