@@ -28,9 +28,10 @@ export const Header: React.FC<HeaderProps> = (props) => {
     }, [user])
 
     return (
-        <AppBar enableColorOnDark position="sticky">
+        <AppBar enableColorOnDark position="sticky" color="default">
             <Toolbar sx={{ justifyContent: "space-between" }}>
-                <Box sx={{ gap: 0.5, alignItems: "flex-end" }}>
+                <Box sx={{ gap: 0.5, alignItems: "center" }}>
+                    <Avatar src="/logo.png" variant="square" />
                     <Button color="inherit" onClick={() => navigate("/")}>
                         <Typography variant="h6" sx={{ fontWeight: 600 }}>
                             Forró CWB
@@ -40,9 +41,7 @@ export const Header: React.FC<HeaderProps> = (props) => {
                 </Box>
                 <IconButton onClick={handleAccountMenuClick}>
                     {user ? (
-                        <Avatar sx={{ color: "primary.main", bgcolor: "background.default", width: "1em", height: "1em" }}>
-                            <Typography>{user?.name[0]}</Typography>
-                        </Avatar>
+                        <Avatar sx={{ color: "inherit", bgcolor: "primary.main" }}>{user?.name[0]}</Avatar>
                     ) : (
                         <AccountCircle sx={{ color: "background.default" }} />
                     )}
