@@ -18,7 +18,7 @@ export const Events: React.FC<EventListProps> = (props) => {
     const isMobile = useMediaQuery("(orientation: portrait)")
 
     const [week, setWeek] = useState(getWeekNumber(new Date().getTime()))
-    const [currentDayIndex, setCurrentDayIndex] = useState(new Date().getDay() - 1)
+    const [currentDayIndex, setCurrentDayIndex] = useState(new Date().getDay() === 0 ? 6 : new Date().getDay() - 1)
     const [swiper, setSwiper] = useState<SwiperType | null>(null)
 
     const { data, isFetching } = useQuery<EventType[]>({
