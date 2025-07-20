@@ -25,6 +25,7 @@ export const Events: React.FC<EventListProps> = (props) => {
         initialData: [],
         queryKey: ["eventsData", week],
         queryFn: async () => (await api.get("/event", { params: { week } })).data,
+        refetchOnWindowFocus: false,
     })
 
     const weekEvents = useMemo(() => {
