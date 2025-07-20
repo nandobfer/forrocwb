@@ -39,7 +39,7 @@ export const EventDay: React.FC<EventDayProps> = ({ day, index }) => {
             </Paper>
             <Paper sx={{ flexDirection: "column", padding: 2 }}>
                 {day.events
-                    .sort((a, b) => Number(a) - Number(b))
+                    .sort((a, b) => Number(a.datetime) - Number(b.datetime))
                     .map((event, index) => (
                         <EventContainer key={event.id} event={event} divider={index !== day.events.length - 1} />
                     ))}
