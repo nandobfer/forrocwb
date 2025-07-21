@@ -5,9 +5,16 @@ import { version } from "../version"
 interface FooterProps {}
 
 const Link: React.FC<{ children: React.ReactNode; link: string }> = (props) => (
-    <span className="link" style={{ fontWeight: "bold" }} onClick={() => window.open(props.link, "_new")}>
+    <Typography
+        color="primary"
+        variant="inherit"
+        component={"span"}
+        className="link"
+        style={{ fontWeight: "bold" }}
+        onClick={() => window.open(props.link, "_new")}
+    >
         {props.children}
-    </span>
+    </Typography>
 )
 
 export const Footer: React.FC<FooterProps> = ({}) => {
@@ -20,10 +27,10 @@ export const Footer: React.FC<FooterProps> = ({}) => {
             position="relative"
             sx={{ flexDirection: "column", alignItems: "center", padding: 2, borderRadius: 0 }}
         >
-            <Typography variant={isMobile ? "caption" : undefined}>
+            <Typography variant={"caption"}>
                 Desenvolvido por <Link link="https://www.instagram.com/nandoburgos/">@nandoburgos</Link>
             </Typography>
-            <Typography variant={isMobile ? "caption" : undefined}>
+            <Typography variant={"caption"}>
                 {new Date().getFullYear()} © Direitos Reservados - {version}
             </Typography>
         </AppBar>
