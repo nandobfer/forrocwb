@@ -31,8 +31,8 @@ export const Header: React.FC<HeaderProps> = (props) => {
         <AppBar enableColorOnDark position="sticky" color="default">
             <Toolbar sx={{ justifyContent: "space-between" }}>
                 <Box sx={{ gap: 0.5, alignItems: "center" }}>
-                    <Avatar src="/logo.png" variant="square" />
-                    <Button color="inherit" onClick={() => navigate("/")}>
+                    <Button color="inherit" onClick={() => navigate("/")} sx={{ gap: 1 }}>
+                        <Avatar src="/logo.png" variant="square" />
                         <Typography variant="h6" sx={{ fontWeight: 600 }}>
                             Forró CWB
                         </Typography>
