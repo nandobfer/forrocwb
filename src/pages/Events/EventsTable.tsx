@@ -11,7 +11,7 @@ import { EventTableCell } from "./EventTableCell"
 import { formatDate } from "../../tools/formatDate"
 import { getWeekNumber } from "../../tools/getWeekNumber"
 import { WeekNavigation } from "./WeekNavigation"
-import { BrokenImage, Delete, Edit, Groups, Link, LocationPin, Person, Reply } from "@mui/icons-material"
+import { BrokenImage, ContentCopy, Delete, Edit, Groups, Link, LocationPin, Person, Reply } from "@mui/icons-material"
 import { DescriptionText } from "../../components/DescriptionText"
 import { PendingInfoChip } from "../../components/PendingInfoChip"
 import { currencyMask } from "../../tools/numberMask"
@@ -59,6 +59,18 @@ export const EventsTable: React.FC<EventsTableProps> = (props) => {
         formContext.open("event")
     }
 
+    const onClonePress = async (id: string) => {
+        setLoading(true)
+        try {
+            const response = await adminApi.post("/event/clone", null, { params: { event_id: id } })
+            onEditPress(response.data)
+        } catch (error) {
+            console.log(error)
+        } finally {
+            setLoading(false)
+        }
+    }
+
     const columns: (GridColDef & { field: keyof Event | "actions" })[] = [
         {
             field: "title",
@@ -74,6 +86,7 @@ export const EventsTable: React.FC<EventsTableProps> = (props) => {
                         setLoading={setLoading}
                         onDeletePress={onDeletePress}
                         onEditPress={onEditPress}
+                        onClonePress={onClonePress}
                     />
                 )
             },
@@ -249,6 +262,7 @@ export const EventsTable: React.FC<EventsTableProps> = (props) => {
             getActions(params) {
                 return [
                     // <GridActionsCellItem label="Visualizar" showInMenu onClick={() => onDeletePress(params.row.id)} disabled icon={<Visibility />} />,
+                    <GridActionsCellItem label="Clonar" showInMenu onClick={() => onClonePress(params.row.id)} icon={<ContentCopy />} />,
                     <GridActionsCellItem label="Editar" showInMenu onClick={() => onEditPress(params.row)} icon={<Edit />} />,
                     <GridActionsCellItem label="Deletar" showInMenu onClick={() => onDeletePress(params.row.id)} icon={<Delete />} />,
                 ]

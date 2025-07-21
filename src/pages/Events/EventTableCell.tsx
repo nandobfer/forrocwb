@@ -1,7 +1,7 @@
 import React, { useState } from "react"
 import { Avatar, Box, Button, Chip, ClickAwayListener, IconButton, Menu, Tooltip, Typography } from "@mui/material"
 import type { Event } from "../../types/server/class/Event"
-import {  BrokenImage, Delete, Edit, Groups, Link, LocationPin, MoreVert, Person, Reply } from "@mui/icons-material"
+import { BrokenImage, ContentCopy, Delete, Edit, Groups, Link, LocationPin, MoreVert, Person, Reply } from "@mui/icons-material"
 import { GridActionsCellItem } from "@mui/x-data-grid"
 import { DescriptionText } from "../../components/DescriptionText"
 import { currencyMask } from "../../tools/numberMask"
@@ -15,11 +15,11 @@ interface EventTableCellProps {
     setLoading: React.Dispatch<React.SetStateAction<boolean>>
     refetch: () => void
     onDeletePress: (event_id: string) => void
+    onClonePress: (event_id: string) => void
     onEditPress: (event: Event) => void
 }
 
 export const EventTableCell: React.FC<EventTableCellProps> = (props) => {
-
     const [menuAnchor, setMenuAnchor] = useState<HTMLButtonElement | null>(null)
     const [showLocation, setShowLocation] = useState(false)
 
@@ -108,6 +108,12 @@ export const EventTableCell: React.FC<EventTableCellProps> = (props) => {
 
             <Menu open={!!menuAnchor} anchorEl={menuAnchor} onClose={closeMenu}>
                 {/* <GridActionsCellItem label="Visualizar" showInMenu disabled icon={<Visibility />} /> */}
+                <GridActionsCellItem
+                    label="Clonar"
+                    showInMenu
+                    onClick={() => onActionClick(() => props.onClonePress(event.id))}
+                    icon={<ContentCopy />}
+                />
                 <GridActionsCellItem label="Editar" showInMenu icon={<Edit />} onClick={() => onActionClick(() => props.onEditPress(event))} />
                 <GridActionsCellItem
                     label="Deletar"
