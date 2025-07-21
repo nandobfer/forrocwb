@@ -82,7 +82,7 @@ export const Events: React.FC<EventListProps> = (props) => {
                                     width: "auto",
                                 }}
                             >
-                                <EventDay day={day} index={index} />
+                                <EventDay day={day} index={index} week={week} />
                             </SwiperSlide>
                         ))}
                     </Swiper>

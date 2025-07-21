@@ -4,10 +4,12 @@ import type { Event } from "../../types/server/class/Event"
 import { useMuiTheme } from "../../hooks/useMuiTheme"
 import { EventContainer } from "./EventContainer"
 import { MoodBad } from "@mui/icons-material"
+import { getWeekNumber } from "../../tools/getWeekNumber"
 
 interface EventDayProps {
     day: WeekDay
     index: number
+    week: number
 }
 
 export interface WeekDay {
@@ -17,10 +19,10 @@ export interface WeekDay {
 
 const borderRadius = 30
 
-export const EventDay: React.FC<EventDayProps> = ({ day, index }) => {
+export const EventDay: React.FC<EventDayProps> = ({ day, index, week }) => {
     const theme = useMuiTheme()
     const today = new Date().getDay()
-    const isToday = index === 6 ? today === 0 : index === today - 1
+    const isToday = (index === 6 ? today === 0 : index === today - 1) && week === getWeekNumber(Date.now())
     return (
         <Paper sx={{ flexDirection: "column", borderTopRightRadius: borderRadius, borderTopLeftRadius: borderRadius, overflow: "hidden" }}>
             <Paper
