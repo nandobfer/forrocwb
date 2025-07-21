@@ -5,7 +5,7 @@ import { AddPhotoAlternate, Close, Edit } from "@mui/icons-material"
 import { useFormModal } from "../../hooks/useFormModal"
 import { useFormik } from "formik"
 import { useUser } from "../../hooks/useUser"
-import { useFileDialog, useMediaQuery } from "@mantine/hooks"
+import { useMediaQuery } from "@mantine/hooks"
 import type { EventForm } from "../../types/server/class/Event"
 import { useQuery } from "@tanstack/react-query"
 import { getWeekNumber } from "../../tools/getWeekNumber"
@@ -17,6 +17,7 @@ import { MobileDateTimePicker } from "@mui/x-date-pickers/MobileDateTimePicker"
 import { currencyMask } from "../../tools/numberMask"
 import { handleCurrencyInput } from "../../tools/handleCurrencyInput"
 import type { Artist } from "../../types/server/class/Artist"
+import { useFilesDialogModal } from "../../hooks/useFilesDialogModal"
 
 interface EventFormModalProps {}
 
@@ -26,12 +27,12 @@ const now = new Date().getTime().toString()
 export const EventFormModal: React.FC<EventFormModalProps> = (props) => {
     const [loading, setLoading] = useState(false)
     const [searchingCep, setSearchingCep] = useState(false)
-    const [imageError, setImageError] = useState(false)
     const [imageLoading, setImageLoading] = useState(false)
     const [currentTab, setCurrentTab] = useState<"basic" | "location" | "details">("basic")
 
     const isMobile = useMediaQuery("(orientation: portrait)")
     const context = useFormModal()
+    const fileDialogModal = useFilesDialogModal({ endpoint, onUpload: (data) => context.setEvent(data) })
 
     const { data: artists, isFetching: loadingArtists } = useQuery<Artist[]>({
         initialData: [],
@@ -44,23 +45,6 @@ export const EventFormModal: React.FC<EventFormModalProps> = (props) => {
         queryFn: async () => (await api.get("/band")).data,
     })
     const { adminApi: api } = useUser()
-
-    const handleImageChange = async (files: FileList | null) => {
-        if (files && context.event) {
-            setImageLoading(true)
-            try {
-                const formData = new FormData()
-                formData.append("image", files[0])
-                const response = await api.patch(endpoint, formData, { params: { event_id: context.event.id } })
-                context.setEvent(response.data)
-            } catch (error) {
-                console.log(error)
-            } finally {
-                setImageLoading(false)
-            }
-        }
-    }
-    const fileDialog = useFileDialog({ accept: "image/*", multiple: false, onChange: handleImageChange })
 
     const formik = useFormik<EventForm>({
         initialValues: context.event
@@ -129,7 +113,6 @@ export const EventFormModal: React.FC<EventFormModalProps> = (props) => {
     useEffect(() => {
         return () => {
             formik.resetForm()
-            fileDialog.reset()
             setCurrentTab("basic")
         }
     }, [context.isOpen])
@@ -147,6 +130,10 @@ export const EventFormModal: React.FC<EventFormModalProps> = (props) => {
                 })
         }
     }, [formik.values.location.cep])
+
+    useEffect(() => {
+        if (context.event) fileDialogModal.setTargetId(context.event.id)
+    }, [context.event])
 
     return (
         <Dialog open={context.isOpen === "event"} onClose={context.close}>
@@ -167,7 +154,10 @@ export const EventFormModal: React.FC<EventFormModalProps> = (props) => {
             <Box sx={{ flexDirection: "column", gap: 2, maxHeight: "60vh", overflowY: "auto", margin: -2, padding: 2 }}>
                 <form onSubmit={formik.handleSubmit}>
                     {context.event && currentTab === "basic" && (
-                        <Button onClick={() => fileDialog.open()} sx={{ width: 1, alignSelf: "center", position: "relative" }}>
+                        <Button
+                            onClick={() => (isMobile ? fileDialogModal.chooseFile() : fileDialogModal.openModal())}
+                            sx={{ width: 1, alignSelf: "center", position: "relative" }}
+                        >
                             {imageLoading ? (
                                 <Skeleton variant="rounded" animation="wave" sx={{ flex: 1, height: "auto", aspectRatio: 2 }} />
                             ) : (
@@ -354,6 +344,7 @@ export const EventFormModal: React.FC<EventFormModalProps> = (props) => {
                     </Button>
                 </form>
             </Box>
+            {!isMobile && fileDialogModal.Modal}
         </Dialog>
     )
 }

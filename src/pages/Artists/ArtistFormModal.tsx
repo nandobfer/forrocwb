@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from "react"
-import { Avatar, Box, Button, CircularProgress, Dialog, IconButton, Skeleton, TextField } from "@mui/material"
+import { Avatar, Box, Button, CircularProgress, Dialog, IconButton, Skeleton, TextField, useMediaQuery } from "@mui/material"
 import { Title } from "../../components/Title"
 import { Close, Edit } from "@mui/icons-material"
 import { useFormModal } from "../../hooks/useFormModal"
 import { useFormik } from "formik"
 import { useUser } from "../../hooks/useUser"
-import { useFileDialog } from "@mantine/hooks"
 import type { ArtistForm } from "../../types/server/class/Artist"
+import { useFilesDialogModal } from "../../hooks/useFilesDialogModal"
 
 interface ArtistFormModalProps {}
 
@@ -16,25 +16,11 @@ export const ArtistFormModal: React.FC<ArtistFormModalProps> = (props) => {
     const [loading, setLoading] = useState(false)
     const [imageLoading, setImageLoading] = useState(false)
 
+    const isMobile = useMediaQuery("(orientation: portrait)")
     const context = useFormModal()
     const { adminApi: api } = useUser()
 
-    const handleImageChange = async (files: FileList | null) => {
-        if (files && context.artist) {
-            setImageLoading(true)
-            try {
-                const formData = new FormData()
-                formData.append("image", files[0])
-                const response = await api.patch(endpoint, formData, { params: { artist_id: context.artist.id } })
-                context.setArtist(response.data)
-            } catch (error) {
-                console.log(error)
-            } finally {
-                setImageLoading(false)
-            }
-        }
-    }
-    const fileDialog = useFileDialog({ accept: "image/*", multiple: false, onChange: handleImageChange })
+    const fileDialogModal = useFilesDialogModal({ endpoint, onUpload: (data) => context.setArtist(data) })
 
     const formik = useFormik<ArtistForm>({
         initialValues: context.artist
@@ -73,9 +59,12 @@ export const ArtistFormModal: React.FC<ArtistFormModalProps> = (props) => {
     useEffect(() => {
         return () => {
             formik.resetForm()
-            fileDialog.reset()
         }
     }, [context.isOpen])
+
+    useEffect(() => {
+        if (context.artist) fileDialogModal.setTargetId(context.artist.id)
+    }, [context.artist])
 
     return (
         <Dialog open={context.isOpen === "artist"} onClose={context.close}>
@@ -91,7 +80,10 @@ export const ArtistFormModal: React.FC<ArtistFormModalProps> = (props) => {
             <Box sx={{ flexDirection: "column", gap: 2 }}>
                 <form onSubmit={formik.handleSubmit}>
                     {context.artist && (
-                        <IconButton onClick={() => fileDialog.open()} sx={{ width: "min-content", alignSelf: "center", position: "relative" }}>
+                        <IconButton
+                            onClick={() => (isMobile ? fileDialogModal.chooseFile() : fileDialogModal.openModal())}
+                            sx={{ width: "min-content", alignSelf: "center", position: "relative" }}
+                        >
                             {imageLoading ? (
                                 <Skeleton variant="rounded" width={150} height={150} animation="wave" sx={{ borderRadius: "100%" }} />
                             ) : (
@@ -146,6 +138,8 @@ export const ArtistFormModal: React.FC<ArtistFormModalProps> = (props) => {
                     </Button>
                 </form>
             </Box>
+
+            {!isMobile && fileDialogModal.Modal}
         </Dialog>
     )
 }

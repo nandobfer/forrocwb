@@ -9,6 +9,7 @@ import { useFileDialog, useMediaQuery } from "@mantine/hooks"
 import type { BandForm } from "../../types/server/class/Band"
 import { useQuery } from "@tanstack/react-query"
 import type { Artist } from "../../types/server/class/Artist"
+import { useFilesDialogModal } from "../../hooks/useFilesDialogModal"
 
 interface BandFormModalProps {}
 
@@ -28,22 +29,7 @@ export const BandFormModal: React.FC<BandFormModalProps> = (props) => {
     })
     const { adminApi: api } = useUser()
 
-    const handleImageChange = async (files: FileList | null) => {
-        if (files && context.band) {
-            setImageLoading(true)
-            try {
-                const formData = new FormData()
-                formData.append("image", files[0])
-                const response = await api.patch(endpoint, formData, { params: { band_id: context.band.id } })
-                context.setBand(response.data)
-            } catch (error) {
-                console.log(error)
-            } finally {
-                setImageLoading(false)
-            }
-        }
-    }
-    const fileDialog = useFileDialog({ accept: "image/*", multiple: false, onChange: handleImageChange })
+    const fileDialogModal = useFilesDialogModal({ endpoint, onUpload: (data) => context.setBand(data) })
 
     const formik = useFormik<BandForm>({
         initialValues: context.band
@@ -82,9 +68,12 @@ export const BandFormModal: React.FC<BandFormModalProps> = (props) => {
     useEffect(() => {
         return () => {
             formik.resetForm()
-            fileDialog.reset()
         }
     }, [context.isOpen])
+
+    useEffect(() => {
+        if (context.band) fileDialogModal.setTargetId(context.band.id)
+    }, [context.band])
 
     return (
         <Dialog open={context.isOpen === "band"} onClose={context.close}>
@@ -100,7 +89,10 @@ export const BandFormModal: React.FC<BandFormModalProps> = (props) => {
             <Box sx={{ flexDirection: "column", gap: 2, maxHeight: "60vh", overflowY: "auto", margin: -2, padding: 2 }}>
                 <form onSubmit={formik.handleSubmit}>
                     {context.band && (
-                        <Button onClick={() => fileDialog.open()} sx={{ width: 1, alignSelf: "center", position: "relative" }}>
+                        <Button
+                            onClick={() => (isMobile ? fileDialogModal.chooseFile() : fileDialogModal.openModal())}
+                            sx={{ width: 1, alignSelf: "center", position: "relative" }}
+                        >
                             {imageLoading ? (
                                 <Skeleton variant="rounded" animation="wave" sx={{ flex: 1, height: "auto", aspectRatio: 2 }} />
                             ) : (
@@ -229,6 +221,8 @@ export const BandFormModal: React.FC<BandFormModalProps> = (props) => {
                     </Button>
                 </form>
             </Box>
+
+            {!isMobile && fileDialogModal.Modal}
         </Dialog>
     )
 }
