@@ -27,7 +27,6 @@ const now = new Date().getTime().toString()
 export const EventFormModal: React.FC<EventFormModalProps> = (props) => {
     const [loading, setLoading] = useState(false)
     const [searchingCep, setSearchingCep] = useState(false)
-    const [imageLoading, setImageLoading] = useState(false)
     const [currentTab, setCurrentTab] = useState<"basic" | "location" | "details">("basic")
 
     const isMobile = useMediaQuery("(orientation: portrait)")
@@ -158,7 +157,7 @@ export const EventFormModal: React.FC<EventFormModalProps> = (props) => {
                             onClick={() => (isMobile ? fileDialogModal.chooseFile() : fileDialogModal.openModal())}
                             sx={{ width: 1, alignSelf: "center", position: "relative" }}
                         >
-                            {imageLoading ? (
+                            {fileDialogModal.loading ? (
                                 <Skeleton variant="rounded" animation="wave" sx={{ flex: 1, height: "auto", aspectRatio: 2 }} />
                             ) : (
                                 <Avatar

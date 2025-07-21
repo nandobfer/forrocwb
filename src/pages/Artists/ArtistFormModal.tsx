@@ -14,7 +14,6 @@ const endpoint = "/artist"
 
 export const ArtistFormModal: React.FC<ArtistFormModalProps> = (props) => {
     const [loading, setLoading] = useState(false)
-    const [imageLoading, setImageLoading] = useState(false)
 
     const isMobile = useMediaQuery("(orientation: portrait)")
     const context = useFormModal()
@@ -84,7 +83,7 @@ export const ArtistFormModal: React.FC<ArtistFormModalProps> = (props) => {
                             onClick={() => (isMobile ? fileDialogModal.chooseFile() : fileDialogModal.openModal())}
                             sx={{ width: "min-content", alignSelf: "center", position: "relative" }}
                         >
-                            {imageLoading ? (
+                            {fileDialogModal.loading ? (
                                 <Skeleton variant="rounded" width={150} height={150} animation="wave" sx={{ borderRadius: "100%" }} />
                             ) : (
                                 <Avatar

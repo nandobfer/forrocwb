@@ -7,7 +7,8 @@
         "dev": "vite",
         "build": "vite build",
         "lint": "eslint .",
-        "preview": "vite preview"
+        "preview": "vite preview",
+        "deploy": "yarn build && zip -r forrocwb.nandoburgos.dev.zip dist && scp forrocwb.nandoburgos.dev.zip boz:/var/www && ssh boz \"cd /var/www && rm -rf forrocwb.nandoburgos.dev.bak && mv forrocwb.nandoburgos.dev forrocwb.nandoburgos.dev.bak && unzip forrocwb.nandoburgos.dev.zip && mv dist forrocwb.nandoburgos.dev && rm -rf forrocwb.nandoburgos.dev.zip\" && rm -rf forrocwb.nandoburgos.dev.zip"
     },
     "dependencies": {
         "@emotion/react": "^11.14.0",

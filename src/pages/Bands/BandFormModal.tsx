@@ -17,7 +17,6 @@ const endpoint = "/band"
 
 export const BandFormModal: React.FC<BandFormModalProps> = (props) => {
     const [loading, setLoading] = useState(false)
-    const [imageLoading, setImageLoading] = useState(false)
 
     const isMobile = useMediaQuery("(orientation: portrait)")
     const context = useFormModal()
@@ -93,7 +92,7 @@ export const BandFormModal: React.FC<BandFormModalProps> = (props) => {
                             onClick={() => (isMobile ? fileDialogModal.chooseFile() : fileDialogModal.openModal())}
                             sx={{ width: 1, alignSelf: "center", position: "relative" }}
                         >
-                            {imageLoading ? (
+                            {fileDialogModal.loading ? (
                                 <Skeleton variant="rounded" animation="wave" sx={{ flex: 1, height: "auto", aspectRatio: 2 }} />
                             ) : (
                                 <Avatar

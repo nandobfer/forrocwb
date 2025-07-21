@@ -43,7 +43,7 @@ export const Header: React.FC<HeaderProps> = (props) => {
                     {user ? (
                         <Avatar sx={{ color: "inherit", bgcolor: "primary.main" }}>{user?.name[0]}</Avatar>
                     ) : (
-                        <AccountCircle sx={{ color: "background.default" }} />
+                        <AccountCircle fontSize="large" sx={{}} />
                     )}
                 </IconButton>
             </Toolbar>
