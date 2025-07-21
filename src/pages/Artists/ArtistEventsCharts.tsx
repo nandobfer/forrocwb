@@ -9,12 +9,12 @@ const Text: React.FC<{ children: React.ReactNode }> = ({ children }) => (
     </Typography>
 )
 
-interface ArtistEventsChatsProps {
+interface ArtistEventsChartsProps {
     artist: Artist
     artists: Artist[]
 }
 
-export const ArtistEventsChats: React.FC<ArtistEventsChatsProps> = (props) => {
+export const ArtistEventsCharts: React.FC<ArtistEventsChartsProps> = (props) => {
     const artist = props.artist
 
     const higherEvents = useMemo(() => props.artists.reduce((max, artist) => (artist.events > max ? artist.events : max), 0), [props.artists])

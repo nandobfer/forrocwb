@@ -13,7 +13,7 @@ import { Delete, Edit, Groups } from "@mui/icons-material"
 import { DescriptionText } from "../../components/DescriptionText"
 import type { Artist } from "../../types/server/class/Artist"
 import { InstagramRender } from "../../components/InstagramRender"
-import { ArtistEventsChats } from "./ArtistEventsCharts"
+import { ArtistEventsCharts } from "./ArtistEventsCharts"
 
 interface ArtistsTableProps {}
 
@@ -70,7 +70,7 @@ export const ArtistsTable: React.FC<ArtistsTableProps> = (props) => {
                       const artist = params.row as Artist
 
                       return (
-                          <Box sx={{ flexDirection: "column", gap: 1, alignItems: "flex-start" }}>
+                          <Box sx={{ flexDirection: "column", gap: 1, alignItems: "flex-start", width: 1 }}>
                               <Box sx={{ alignItems: "center", gap: 1 }}>
                                   {artist.bands > 0 && (
                                       <Tooltip
@@ -93,7 +93,7 @@ export const ArtistsTable: React.FC<ArtistsTableProps> = (props) => {
                               </Box>
                               <DescriptionText text={artist.description} />
                               <InstagramRender instagram_url={artist.instagram} />
-                              <ArtistEventsChats artist={artist} artists={data} />
+                              <ArtistEventsCharts artist={artist} artists={data} />
                           </Box>
                       )
                   },
@@ -138,7 +138,7 @@ export const ArtistsTable: React.FC<ArtistsTableProps> = (props) => {
                   display: "flex",
                   flex: 0.15,
                   renderCell(params) {
-                      return <ArtistEventsChats artist={params.row} artists={data} />
+                      return <ArtistEventsCharts artist={params.row} artists={data} />
                   },
               },
 
