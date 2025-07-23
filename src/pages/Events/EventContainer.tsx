@@ -23,6 +23,8 @@ import { GridExpandMoreIcon } from "@mui/x-data-grid"
 interface EventContainerProps {
     event: Event
     divider?: boolean
+    expandedId: string
+    handleAccordeonClick: (id: string) => void
 }
 
 export const EventContainer: React.FC<EventContainerProps> = (props) => {
@@ -37,7 +39,12 @@ export const EventContainer: React.FC<EventContainerProps> = (props) => {
 
     return (
         <Box sx={{ flexDirection: "column", gap: 1, width: 1 }}>
-            <Accordion sx={{ flexDirection: "column" }} slots={{ root: Box }}>
+            <Accordion
+                sx={{ flexDirection: "column" }}
+                slots={{ root: Box }}
+                expanded={props.expandedId === props.event.id}
+                onChange={(_, expanded) => props.handleAccordeonClick(expanded ? props.event.id : "")}
+            >
                 <AccordionSummary expandIcon={<GridExpandMoreIcon />} sx={{ padding: 0 }}>
                     <Box sx={{ alignItems: "center", justifyContent: "space-between" }}>
                         <Box sx={{ flexDirection: "column", width: 1 }}>
