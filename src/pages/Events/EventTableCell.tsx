@@ -67,8 +67,9 @@ export const EventTableCell: React.FC<EventTableCellProps> = (props) => {
 
             <Avatar
                 src={event.image || undefined}
-                sx={{ width: 1, height: 150, bgcolor: "background.default", color: "primary.main" }}
+                sx={{ width: 1, height: 150, bgcolor: "transparent", color: "primary.main" }}
                 variant="rounded"
+                slotProps={{ img: { style: { objectFit: "contain" } } }}
             >
                 <BrokenImage sx={{ width: 1, height: 1 }} />
             </Avatar>

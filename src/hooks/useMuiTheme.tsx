@@ -55,7 +55,7 @@ export const useMuiTheme = () => {
                             defaultProps: {
                                 slotProps: {
                                     paper: {
-                                        sx: { maxWidth: "90vw", display: "flex", padding: 2, flexDirection: "column", gap: 2 },
+                                        sx: { display: "flex", padding: 2, flexDirection: "column", gap: 2 },
                                         elevation: undefined,
                                     },
                                 },

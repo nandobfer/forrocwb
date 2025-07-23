@@ -91,8 +91,9 @@ export const BandsTable: React.FC<BandsTableProps> = (props) => {
                 return (
                     <Avatar
                         src={params.value || undefined}
-                        sx={{ width: 1, height: 75, bgcolor: "background.default", color: "primary.main" }}
+                        sx={{ width: 1, height: 75, bgcolor: "transparent", color: "primary.main" }}
                         variant="rounded"
+                        slotProps={{ img: { style: { objectFit: "contain" } } }}
                     >
                         <Groups sx={{ width: 1, height: 1 }} />
                     </Avatar>

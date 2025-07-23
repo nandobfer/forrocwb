@@ -150,7 +150,7 @@ export const EventFormModal: React.FC<EventFormModalProps> = (props) => {
                 <Tab label="Localização" value={"location"} disabled={!context.event} />
                 <Tab label="Detalhes" value={"details"} disabled={!context.event} />
             </Tabs>
-            <Box sx={{ flexDirection: "column", gap: 2, maxHeight: "60vh", overflowY: "auto", margin: -2, padding: 2 }}>
+            <Box sx={{ flexDirection: "column", gap: 2, overflowY: "auto", margin: -2, padding: 2 }}>
                 <form onSubmit={formik.handleSubmit}>
                     {context.event && currentTab === "basic" && (
                         <Button
@@ -163,9 +163,10 @@ export const EventFormModal: React.FC<EventFormModalProps> = (props) => {
                                 <Avatar
                                     variant="rounded"
                                     src={context.event.image || undefined}
-                                    sx={{ flex: 1, height: "auto", aspectRatio: 2, bgcolor: "background.default", color: "primary.main" }}
+                                    sx={{ width: 1, height: "auto", bgcolor: "transparent", color: "primary.main", maxWidth: 300 }}
+                                    // slotProps={{ img: { style: { objectFit: "contain" } } }}
                                 >
-                                    <AddPhotoAlternate sx={{ width: 1, height: 1 }} />
+                                    <AddPhotoAlternate sx={{ width: 0.5, height: 0.5 }} />
                                 </Avatar>
                             )}
                             <Edit
