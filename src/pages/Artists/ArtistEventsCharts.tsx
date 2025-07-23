@@ -31,8 +31,12 @@ export const ArtistEventsCharts: React.FC<ArtistEventsChartsProps> = (props) => 
         <Box sx={{ flexDirection: "column", width: 1 }}>
             <Text>Eventos</Text>
             <NormalizedBarChart max={higherEventsWithoutBand} value={artist.eventsWithoutBand} color="warning" />
-            <Text>Eventos como banda</Text>
-            <NormalizedBarChart max={higherEventsAsBands} value={artist.eventsAsBand} color="warning" />
+            {!!artist.bands && (
+                <>
+                    <Text>Eventos como banda</Text>
+                    <NormalizedBarChart max={higherEventsAsBands} value={artist.eventsAsBand} color="warning" />
+                </>
+            )}
             <Text>Eventos (total)</Text>
             <NormalizedBarChart max={higherEvents} value={artist.events} color="primary" />
         </Box>
