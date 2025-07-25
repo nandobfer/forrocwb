@@ -98,7 +98,7 @@ export const BandFormModal: React.FC<BandFormModalProps> = (props) => {
                                 <Avatar
                                     variant="rounded"
                                     src={context.band.image || undefined}
-                                    sx={{ flex: 1, height: "auto", aspectRatio: 2, bgcolor: "background.default", color: "primary.main" }}
+                                    sx={{ width: 1, height: "auto", bgcolor: "background.default", color: "primary.main" }}
                                 >
                                     <Groups sx={{ width: 1, height: 1 }} />
                                 </Avatar>
