@@ -13,7 +13,7 @@ import type { Band } from "../../types/server/class/Band"
 import dayjs from "dayjs"
 import { searchCep } from "../../tools/searchCep"
 import MaskedInputComponent from "../../components/MaskedInput"
-import { MobileDateTimePicker } from "@mui/x-date-pickers/MobileDateTimePicker"
+import { MobileDateTimePicker, DateTimePicker } from "@mui/x-date-pickers"
 import { currencyMask } from "../../tools/numberMask"
 import { handleCurrencyInput } from "../../tools/handleCurrencyInput"
 import type { Artist } from "../../types/server/class/Artist"
@@ -187,7 +187,7 @@ export const EventFormModal: React.FC<EventFormModalProps> = (props) => {
 
                     {currentTab === "basic" && (
                         <>
-                            <MobileDateTimePicker
+                            <DateTimePicker
                                 label="Data e hora"
                                 slotProps={{ textField: { size: "small", required: true } }}
                                 value={dayjs(Number(formik.values.datetime))}
